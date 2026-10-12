@@ -8,6 +8,7 @@ const sections = [
   { href: "/admin/counters", title: "Counters", desc: "Add, rename, set status, and assign modules with access levels" },
   { href: "/admin/modules", title: "Modules", desc: "Create feature groupings and choose which services belong to each" },
   { href: "/admin/users", title: "Users & Roles", desc: "Assign roles to staff accounts" },
+  { href: "/admin/reports", title: "Reports", desc: "Transaction volumes, wait vs handling times, CSV export" },
 ];
 
 export default async function AdminPage() {
