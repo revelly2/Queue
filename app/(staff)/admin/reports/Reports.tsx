@@ -6,8 +6,8 @@ import { getReport, reportToCsv, type ReportData } from "@/lib/admin/reports";
 
 function Tile({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-lg border border-gray-200 p-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">{label}</p>
+    <div className="rounded-lg border border-line p-4">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted">{label}</p>
       <p className="mt-1 text-2xl font-bold">{value}</p>
     </div>
   );
@@ -61,21 +61,21 @@ export default function Reports({
   return (
     <main className="mx-auto max-w-3xl px-4 py-6">
       <h1 className="mb-1 text-2xl font-bold">Reports</h1>
-      <p className="mb-4 text-sm text-gray-500">Transaction volumes and service metrics.</p>
+      <p className="mb-4 text-sm text-muted">Transaction volumes and service metrics.</p>
 
       <div className="mb-5 flex flex-wrap items-end gap-2">
         <label className="flex flex-col gap-1 text-xs font-medium">
           From
-          <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="rounded-md border border-gray-300 px-2 py-1.5 text-sm" />
+          <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="rounded-md border border-line px-2 py-1.5 text-sm" />
         </label>
         <label className="flex flex-col gap-1 text-xs font-medium">
           To
-          <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="rounded-md border border-gray-300 px-2 py-1.5 text-sm" />
+          <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="rounded-md border border-line px-2 py-1.5 text-sm" />
         </label>
-        <button onClick={() => void run()} disabled={busy} className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">
+        <button onClick={() => void run()} disabled={busy} className="rounded-md bg-blue px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">
           {busy ? "Running…" : "Run"}
         </button>
-        <button onClick={exportCsv} className="rounded-md border border-gray-300 px-3 py-2 text-sm font-semibold">
+        <button onClick={exportCsv} className="rounded-md border border-line px-3 py-2 text-sm font-semibold">
           Export CSV
         </button>
       </div>
@@ -91,22 +91,22 @@ export default function Reports({
         <Tile label="Peak hour" value={peak.count > 0 ? `${peak.hour}:00 (${peak.count})` : "—"} />
       </section>
 
-      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
         Transactions by service
       </h2>
       {report.byService.length === 0 ? (
-        <p className="text-sm text-gray-400">No transactions in this range.</p>
+        <p className="text-sm text-muted">No transactions in this range.</p>
       ) : (
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-200 text-left text-gray-500">
+            <tr className="border-b border-line text-left text-muted">
               <th className="py-2">Service</th>
               <th className="py-2 text-right">Count</th>
             </tr>
           </thead>
           <tbody>
             {report.byService.map((s) => (
-              <tr key={s.code} className="border-b border-gray-100">
+              <tr key={s.code} className="border-b border-line">
                 <td className="py-1.5">{s.name}</td>
                 <td className="py-1.5 text-right font-semibold tabular-nums">{s.count}</td>
               </tr>

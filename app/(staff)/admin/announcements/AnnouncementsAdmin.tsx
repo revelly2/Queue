@@ -37,7 +37,7 @@ export default function AnnouncementsAdmin({ initial }: { initial: Announcement[
   return (
     <main className="mx-auto max-w-3xl px-4 py-6">
       <h1 className="mb-1 text-2xl font-bold">Announcements</h1>
-      <p className="mb-4 text-sm text-gray-500">
+      <p className="mb-4 text-sm text-muted">
         Messages shown in the lobby display ticker. Only active ones appear.
       </p>
 
@@ -62,29 +62,29 @@ export default function AnnouncementsAdmin({ initial }: { initial: Announcement[
             setNewMessage(""),
           );
         }}
-        className="mb-6 flex gap-2 rounded-lg border border-gray-200 p-4"
+        className="mb-6 flex gap-2 rounded-lg border border-line p-4"
       >
         <input
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="New announcement message"
-          className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
+          className="flex-1 rounded-md border border-line px-3 py-2 text-sm"
         />
         <button
           type="submit"
           disabled={busy}
-          className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          className="rounded-md bg-blue px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
           Add
         </button>
       </form>
 
       {items.length === 0 ? (
-        <p className="text-sm text-gray-400">No announcements yet.</p>
+        <p className="text-sm text-muted">No announcements yet.</p>
       ) : (
         <ul className="flex flex-col gap-2">
           {items.map((a) => (
-            <li key={a.id} className="flex flex-wrap items-center gap-2 rounded-lg border border-gray-200 p-3">
+            <li key={a.id} className="flex flex-wrap items-center gap-2 rounded-lg border border-line p-3">
               <input
                 type="number"
                 defaultValue={a.sortOrder}
@@ -92,7 +92,7 @@ export default function AnnouncementsAdmin({ initial }: { initial: Announcement[
                   const n = Number(e.target.value);
                   if (n !== a.sortOrder) void run(() => updateAnnouncement(supabase, a.id, { sortOrder: n }), "Order updated");
                 }}
-                className="w-14 rounded-md border border-gray-300 px-2 py-1.5 text-sm"
+                className="w-14 rounded-md border border-line px-2 py-1.5 text-sm"
                 title="Sort order"
               />
               <input
@@ -101,11 +101,11 @@ export default function AnnouncementsAdmin({ initial }: { initial: Announcement[
                   const v = e.target.value.trim();
                   if (v && v !== a.message) void run(() => updateAnnouncement(supabase, a.id, { message: v }), "Message updated");
                 }}
-                className={`min-w-0 flex-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm ${
-                  a.isActive ? "" : "text-gray-400 line-through"
+                className={`min-w-0 flex-1 rounded-md border border-line px-2 py-1.5 text-sm ${
+                  a.isActive ? "" : "text-muted line-through"
                 }`}
               />
-              <label className="flex items-center gap-1 text-xs text-gray-600">
+              <label className="flex items-center gap-1 text-xs text-muted">
                 <input
                   type="checkbox"
                   defaultChecked={a.isActive}

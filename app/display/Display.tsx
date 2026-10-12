@@ -8,8 +8,7 @@ const servingMap = (snap: DisplaySnapshot) =>
   new Map(snap.counters.map((c) => [c.number, c.serving]));
 
 /** "DOC-0005" -> "D O C 0 0 0 5" for clearer text-to-speech. */
-const spell = (ticket: string) =>
-  [...ticket].filter((ch) => ch !== "-").join(" ");
+const spell = (ticket: string) => [...ticket].filter((ch) => ch !== "-").join(" ");
 
 export default function Display({ initial }: { initial: DisplaySnapshot }) {
   const [supabase] = useState(() => createClient());
@@ -48,7 +47,6 @@ export default function Display({ initial }: { initial: DisplaySnapshot }) {
       );
       u.rate = 0.9;
       window.speechSynthesis.cancel();
-      // Let the chime lead slightly before the voice.
       setTimeout(() => window.speechSynthesis.speak(u), 450);
     } catch {
       /* speech not supported */
@@ -70,7 +68,6 @@ export default function Display({ initial }: { initial: DisplaySnapshot }) {
     playChime();
   }
 
-  // Poll every 3s; announce counters whose serving ticket just changed.
   useEffect(() => {
     const id = setInterval(async () => {
       try {
@@ -88,53 +85,53 @@ export default function Display({ initial }: { initial: DisplaySnapshot }) {
       }
     }, 3000);
     return () => clearInterval(id);
-    // announce/playChime are stable within a render and intentionally omitted.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supabase]);
 
   return (
-    <main className="min-h-screen bg-slate-950 px-6 py-6 text-white">
-      <style>{`@keyframes queua-marquee{from{transform:translateX(100%)}to{transform:translateX(-100%)}}`}</style>
-
-      <header className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-wide">
-          QueUA <span className="text-slate-400">· Now Serving</span>
+    <main className="min-h-screen px-8 py-7 text-paper" style={{ background: "var(--ink)" }}>
+      <header className="mb-8 flex items-baseline justify-between">
+        <h1 className="display text-5xl">
+          Now Serving<span className="text-acid">.</span>
         </h1>
-        {!soundOn && (
-          <button
-            onClick={enableSound}
-            className="rounded-md bg-amber-500 px-4 py-2 text-sm font-semibold text-black"
-          >
-            🔊 Enable announcements
-          </button>
-        )}
+        <div className="flex items-center gap-4">
+          <span className="eyebrow" style={{ color: "rgba(244,243,238,0.6)" }}>
+            QueUA Registrar
+          </span>
+          {!soundOn && (
+            <button onClick={enableSound} className="btn btn-acid text-sm">
+              🔊 Enable announcements
+            </button>
+          )}
+        </div>
       </header>
 
       {/* Counter grid */}
-      <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {snap.counters.length === 0 ? (
-          <p className="text-slate-400">No open counters.</p>
+          <p style={{ color: "rgba(244,243,238,0.5)" }}>No open counters.</p>
         ) : (
           snap.counters.map((c) => (
             <div
               key={c.number}
-              className={`rounded-2xl border p-6 ${
-                c.serving ? "border-blue-500 bg-blue-950/40" : "border-slate-700 bg-slate-900"
-              }`}
+              className="rounded-[3px] p-6"
+              style={{
+                border: c.serving ? "1px solid var(--acid)" : "1px solid rgba(244,243,238,0.14)",
+                background: c.serving ? "rgba(214,255,63,0.06)" : "rgba(244,243,238,0.03)",
+              }}
             >
-              <p className="text-sm uppercase tracking-wide text-slate-400">
+              <p className="eyebrow" style={{ color: "rgba(244,243,238,0.55)" }}>
                 Window {c.number}
               </p>
-              <p className="mt-0.5 truncate text-lg font-medium text-slate-200">
+              <p className="mt-0.5 truncate text-lg" style={{ color: "rgba(244,243,238,0.8)" }}>
                 {c.label}
               </p>
-              <p className="mt-4 text-5xl font-extrabold tabular-nums">
-                {c.serving ?? <span className="text-slate-600">—</span>}
+              <p className={`mono mt-5 text-6xl font-semibold ${c.serving ? "text-acid" : ""}`}
+                 style={c.serving ? undefined : { color: "rgba(244,243,238,0.25)" }}>
+                {c.serving ?? "—"}
               </p>
               {c.status !== "OPEN" && (
-                <p className="mt-2 text-xs font-semibold uppercase text-amber-400">
-                  {c.status.replace("_", " ")}
-                </p>
+                <p className="eyebrow mt-2 text-amber-300">{c.status.replace("_", " ")}</p>
               )}
             </div>
           ))
@@ -142,18 +139,19 @@ export default function Display({ initial }: { initial: DisplaySnapshot }) {
       </section>
 
       {/* Next in line */}
-      <section className="mt-8">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+      <section className="mt-10">
+        <p className="eyebrow mb-3" style={{ color: "rgba(244,243,238,0.55)" }}>
           Next in line
-        </h2>
+        </p>
         {snap.nextInLine.length === 0 ? (
-          <p className="text-slate-500">Queue is empty.</p>
+          <p style={{ color: "rgba(244,243,238,0.4)" }}>Queue is empty.</p>
         ) : (
           <div className="flex flex-wrap gap-3">
             {snap.nextInLine.map((t) => (
               <span
                 key={t}
-                className="rounded-lg bg-slate-800 px-4 py-2 text-2xl font-bold tabular-nums"
+                className="mono rounded-[3px] px-4 py-2 text-2xl font-semibold"
+                style={{ background: "rgba(244,243,238,0.08)" }}
               >
                 {t}
               </span>
@@ -162,14 +160,17 @@ export default function Display({ initial }: { initial: DisplaySnapshot }) {
         )}
       </section>
 
-      {/* Announcement ticker */}
+      {/* Ticker */}
       {snap.announcements.length > 0 && (
-        <footer className="fixed inset-x-0 bottom-0 overflow-hidden border-t border-slate-800 bg-slate-900 py-3">
+        <footer
+          className="fixed inset-x-0 bottom-0 overflow-hidden py-3"
+          style={{ borderTop: "1px solid rgba(244,243,238,0.14)", background: "rgba(0,0,0,0.3)" }}
+        >
           <div
-            className="whitespace-nowrap text-xl text-slate-200"
-            style={{ animation: "queua-marquee 30s linear infinite" }}
+            className="marquee-track whitespace-nowrap text-xl"
+            style={{ animation: "marquee 32s linear infinite", color: "rgba(244,243,238,0.85)" }}
           >
-            {snap.announcements.join("     •     ")}
+            {snap.announcements.join("      —      ")}
           </div>
         </footer>
       )}

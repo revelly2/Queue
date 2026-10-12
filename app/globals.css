@@ -1,26 +1,218 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Vellum · Kinetic Type — design system
+   Palette + type adapted from the reference (not copied).
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f4f3ee;
+  --paper-dim: #eceae2;
+  --ink: #151513;
+  --ink-soft: #2a2a26;
+  --muted: #6d6d66;
+  --line: #d7d6cf;
+  --acid: #d6ff3f;
+  --blue: #3458f4;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --radius: 3px;
+  color-scheme: light;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-dim: var(--paper-dim);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-acid: var(--acid);
+  --color-blue: var(--blue);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-serif: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ---- Base ---- */
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+}
+
+::selection {
+  background: var(--acid);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* Keep native date/number controls on-brand (light). */
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+}
+
+/* ---- Kinetic type ---- */
+@keyframes kinetic-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+    letter-spacing: 0.02em;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    letter-spacing: -0.015em;
+  }
+}
+.kinetic {
+  animation: kinetic-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes marquee {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kinetic,
+  [style*="marquee"],
+  .marquee-track {
+    animation: none !important;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---- Component vocabulary ---- */
+@layer components {
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+  }
+
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .card {
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--paper) 60%, white);
+    border-radius: var(--radius);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border-radius: var(--radius);
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    border: 1px solid transparent;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease,
+      transform 0.05s ease;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn-primary:hover {
+    background: var(--ink-soft);
+  }
+  .btn-accent {
+    background: var(--blue);
+    color: #fff;
+  }
+  .btn-accent:hover {
+    filter: brightness(1.08);
+  }
+  .btn-acid {
+    background: var(--acid);
+    color: var(--ink);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  .btn-ghost:hover {
+    background: var(--paper-dim);
+  }
+  .btn-danger {
+    background: transparent;
+    color: #b42318;
+    border-color: #e5bdb8;
+  }
+  .btn-danger:hover {
+    background: #fbeceb;
+  }
+
+  .field {
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: #fff;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 18%, transparent);
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
 }

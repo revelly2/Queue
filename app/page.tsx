@@ -1,34 +1,43 @@
 import Link from "next/link";
 
 const portals = [
-  { href: "/kiosk", title: "Check-in Kiosk", desc: "Get a queue ticket (students)" },
-  { href: "/login", title: "Staff Sign In", desc: "Cashier, registrar & admin" },
+  { href: "/kiosk", title: "Check-in Kiosk", desc: "Get a queue ticket", tag: "Students" },
+  { href: "/login", title: "Staff Sign In", desc: "Cashier, registrar & admin", tag: "Staff" },
 ];
 
 export default function Home() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-8 px-4">
+    <main className="mx-auto flex min-h-screen w-full max-w-2xl flex-col justify-center gap-10 px-6">
       <div>
-        <h1 className="text-3xl font-bold">QueUA</h1>
-        <p className="mt-1 text-gray-500">
-          Registrar Queue Management &amp; Monitoring System
+        <p className="eyebrow">Registrar Queue Management</p>
+        <h1 className="kinetic mt-2 text-7xl sm:text-8xl">QueUA</h1>
+        <p className="mt-3 max-w-md text-muted">
+          Automated check-in, dynamic window routing, and real-time queue
+          tracking for the Office of the Registrar.
         </p>
       </div>
-      <nav className="grid gap-4 sm:grid-cols-2">
+
+      <nav className="grid gap-px overflow-hidden rounded-[3px] border border-line bg-line sm:grid-cols-2">
         {portals.map((p) => (
           <Link
             key={p.href}
             href={p.href}
-            className="rounded-lg border border-gray-200 p-5 shadow-sm transition hover:border-blue-400 hover:shadow"
+            className="group flex flex-col justify-between gap-8 bg-paper p-6 transition hover:bg-paper-dim"
           >
-            <p className="text-lg font-semibold">{p.title}</p>
-            <p className="mt-1 text-sm text-gray-500">{p.desc}</p>
+            <span className="eyebrow">{p.tag}</span>
+            <span>
+              <span className="display block text-2xl">{p.title}</span>
+              <span className="mt-1 block text-sm text-muted">{p.desc}</span>
+              <span className="mt-3 inline-block text-sm text-blue group-hover:translate-x-0.5">
+                Enter →
+              </span>
+            </span>
           </Link>
         ))}
       </nav>
-      <p className="text-xs text-gray-400">
-        Kiosk check-in, registrar console, lobby display &amp; analytics — coming
-        in later phases.
+
+      <p className="mono text-xs text-muted">
+        Kiosk · Cashier · Counter Console · Lobby Display · Analytics
       </p>
     </main>
   );

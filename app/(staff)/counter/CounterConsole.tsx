@@ -121,7 +121,7 @@ export default function CounterConsole({
 
   if (!counter) {
     return (
-      <main className="mx-auto max-w-3xl px-4 py-16 text-center text-gray-500">
+      <main className="mx-auto max-w-3xl px-4 py-16 text-center text-muted">
         No counters are configured. Ask an administrator to create one.
       </main>
     );
@@ -132,7 +132,7 @@ export default function CounterConsole({
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">Counter Console</h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted">
             {counter.modules.map((m) => m.name).join(", ") || "No modules assigned"}
             {counter.maxAccess ? ` · ${counter.maxAccess.toLowerCase()} access` : ""}
           </p>
@@ -141,7 +141,7 @@ export default function CounterConsole({
           <select
             value={counter.id}
             onChange={(e) => setSelectedId(Number(e.target.value))}
-            className="rounded-md border border-gray-300 px-2 py-1.5 text-sm"
+            className="rounded-md border border-line px-2 py-1.5 text-sm"
           >
             {counters.map((c) => (
               <option key={c.id} value={c.id}>
@@ -153,7 +153,7 @@ export default function CounterConsole({
             value={counter.status}
             onChange={(e) => void changeStatus(e.target.value as CounterStatus)}
             disabled={busy}
-            className="rounded-md border border-gray-300 px-2 py-1.5 text-sm"
+            className="rounded-md border border-line px-2 py-1.5 text-sm"
             title="Counter status"
           >
             {COUNTER_STATUS.map((s) => (
@@ -170,7 +170,7 @@ export default function CounterConsole({
           void run(() => callNext(supabase, counter.id), "Called next ticket")
         }
         disabled={busy || !canWrite || counter.status === "CLOSED"}
-        className="mb-4 w-full rounded-md bg-blue-600 px-4 py-3 text-base font-semibold text-white disabled:opacity-50"
+        className="mb-4 w-full rounded-md bg-blue px-4 py-3 text-base font-semibold text-white disabled:opacity-50"
       >
         Call Next
       </button>
@@ -187,11 +187,11 @@ export default function CounterConsole({
       )}
 
       <section className="mb-6">
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
           Now serving ({board.serving.length})
         </h2>
         {board.serving.length === 0 ? (
-          <p className="rounded-md border border-dashed border-gray-300 px-4 py-6 text-center text-gray-400">
+          <p className="rounded-md border border-dashed border-line px-4 py-6 text-center text-muted">
             Nothing being served.
           </p>
         ) : (
@@ -214,23 +214,23 @@ export default function CounterConsole({
       </section>
 
       <section>
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
           Next in line ({board.waiting.length})
         </h2>
         {board.waiting.length === 0 ? (
-          <p className="text-sm text-gray-400">Queue is empty.</p>
+          <p className="text-sm text-muted">Queue is empty.</p>
         ) : (
           <ol className="flex flex-col gap-1 text-sm">
             {board.waiting.map((t, i) => (
               <li
                 key={t.id}
-                className="flex justify-between rounded-md border border-gray-200 px-3 py-2"
+                className="flex justify-between rounded-md border border-line px-3 py-2"
               >
                 <span>
                   <span className="font-semibold">{i + 1}. {t.ticketNumber}</span>{" "}
-                  <span className="text-gray-500">{t.studentName ?? "—"}</span>
+                  <span className="text-muted">{t.studentName ?? "—"}</span>
                 </span>
-                <span className="text-gray-400">
+                <span className="text-muted">
                   {t.items.map((it) => it.name).join(", ")}
                 </span>
               </li>
@@ -263,15 +263,15 @@ function ServingCard({
 }) {
   const onHold = t.queueStatus === "ON_HOLD";
   return (
-    <li className="rounded-lg border border-gray-200 p-4 shadow-sm">
+    <li className="rounded-lg border border-line p-4 shadow-sm">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-lg font-bold">{t.ticketNumber}</p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted">
             {t.studentName ?? "—"}
             {t.studentId ? ` · ${t.studentId}` : ""}
           </p>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 text-sm text-muted">
             {t.items.map((it) => it.name + (it.quantity > 1 ? ` ×${it.quantity}` : "")).join(", ")}
           </p>
           {onHold && (
@@ -280,17 +280,17 @@ function ServingCard({
             </p>
           )}
           {t.recallCount > 0 && (
-            <p className="mt-1 text-xs text-gray-400">Recalls: {t.recallCount}</p>
+            <p className="mt-1 text-xs text-muted">Recalls: {t.recallCount}</p>
           )}
         </div>
       </div>
 
       {canWrite && (
-        <div className="mt-3 flex flex-wrap gap-2 border-t border-gray-100 pt-3">
+        <div className="mt-3 flex flex-wrap gap-2 border-t border-line pt-3">
           <button
             onClick={() => void run(() => recall(supabase, t.id), `${t.ticketNumber} recalled`)}
             disabled={busy}
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium disabled:opacity-50"
+            className="rounded-md border border-line px-3 py-1.5 text-sm font-medium disabled:opacity-50"
           >
             Recall
           </button>
@@ -298,7 +298,7 @@ function ServingCard({
             <button
               onClick={() => void run(() => resume(supabase, t.id), `${t.ticketNumber} resumed`)}
               disabled={busy}
-              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium disabled:opacity-50"
+              className="rounded-md border border-line px-3 py-1.5 text-sm font-medium disabled:opacity-50"
             >
               Resume
             </button>
@@ -309,7 +309,7 @@ function ServingCard({
                 void run(() => hold(supabase, t.id, reason), `${t.ticketNumber} on hold`);
               }}
               disabled={busy}
-              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium disabled:opacity-50"
+              className="rounded-md border border-line px-3 py-1.5 text-sm font-medium disabled:opacity-50"
             >
               Hold
             </button>
@@ -317,7 +317,7 @@ function ServingCard({
           <button
             onClick={() => void run(() => complete(supabase, t.id), `${t.ticketNumber} completed`)}
             disabled={busy}
-            className="rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
+            className="rounded-md bg-blue px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
           >
             Complete
           </button>
@@ -345,7 +345,7 @@ function ServingCard({
                   e.target.value = "";
                 }}
                 disabled={busy}
-                className="rounded-md border border-gray-300 px-2 py-1.5 text-sm"
+                className="rounded-md border border-line px-2 py-1.5 text-sm"
               >
                 <option value="">Transfer to…</option>
                 {counters

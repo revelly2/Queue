@@ -77,7 +77,7 @@ export default function CashierBoard({ initialPending, cashierLabel }: Props) {
     <main className="mx-auto max-w-3xl px-4 py-6">
       <header className="mb-6">
         <h1 className="text-2xl font-bold">Cashier — Payment Clearance</h1>
-        <p className="text-sm text-gray-500">Signed in as {cashierLabel}</p>
+        <p className="text-sm text-muted">Signed in as {cashierLabel}</p>
       </header>
 
       {/* Rapid clearance by ticket number / scan (FR-2.2) */}
@@ -92,13 +92,13 @@ export default function CashierBoard({ initialPending, cashierLabel }: Props) {
           value={manualNumber}
           onChange={(e) => setManualNumber(e.target.value)}
           placeholder="Scan or type ticket no. (e.g. DOC-0001)"
-          className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-base"
+          className="flex-1 rounded-md border border-line px-3 py-2 text-base"
           autoFocus
         />
         <button
           type="submit"
           disabled={busy !== null}
-          className="rounded-md bg-green-600 px-4 py-2 font-semibold text-white disabled:opacity-50"
+          className="rounded-md bg-blue px-4 py-2 font-semibold text-white disabled:opacity-50"
         >
           Confirm Payment
         </button>
@@ -115,12 +115,12 @@ export default function CashierBoard({ initialPending, cashierLabel }: Props) {
         </p>
       )}
 
-      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
         Awaiting payment ({pending.length})
       </h2>
 
       {pending.length === 0 ? (
-        <p className="rounded-md border border-dashed border-gray-300 px-4 py-8 text-center text-gray-400">
+        <p className="rounded-md border border-dashed border-line px-4 py-8 text-center text-muted">
           No tickets awaiting payment.
         </p>
       ) : (
@@ -128,12 +128,12 @@ export default function CashierBoard({ initialPending, cashierLabel }: Props) {
           {pending.map((t) => (
             <li
               key={t.ticketNumber}
-              className="rounded-lg border border-gray-200 p-4 shadow-sm"
+              className="rounded-lg border border-line p-4 shadow-sm"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-lg font-bold">{t.ticketNumber}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted">
                     {t.studentName ?? "—"}
                     {t.studentId ? ` · ${t.studentId}` : ""}
                   </p>
@@ -143,13 +143,13 @@ export default function CashierBoard({ initialPending, cashierLabel }: Props) {
                   <button
                     onClick={() => void clear(t.ticketNumber)}
                     disabled={busy !== null}
-                    className="mt-1 rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
+                    className="mt-1 rounded-md bg-blue px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
                   >
                     {busy === t.ticketNumber ? "…" : "Confirm"}
                   </button>
                 </div>
               </div>
-              <ul className="mt-3 border-t border-gray-100 pt-2 text-sm text-gray-600">
+              <ul className="mt-3 border-t border-line pt-2 text-sm text-muted">
                 {t.items.map((it, i) => (
                   <li key={i} className="flex justify-between">
                     <span>

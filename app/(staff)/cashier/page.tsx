@@ -34,11 +34,11 @@ export default async function CashierPage() {
     return (
       <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-4 px-4 text-center">
         <h1 className="text-xl font-bold">Not authorized</h1>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted">
           This account ({user.email}) does not have cashier access. Ask an
           administrator to grant the <code>CASHIER</code> role.
         </p>
-        <Link href="/login" className="text-blue-600 underline">
+        <Link href="/login" className="text-blue underline">
           Switch account
         </Link>
       </main>

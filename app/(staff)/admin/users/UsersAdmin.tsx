@@ -31,7 +31,7 @@ export default function UsersAdmin({ initialUsers }: { initialUsers: StaffUser[]
   return (
     <main className="mx-auto max-w-3xl px-4 py-6">
       <h1 className="mb-1 text-2xl font-bold">Users &amp; Roles</h1>
-      <p className="mb-4 text-sm text-gray-500">
+      <p className="mb-4 text-sm text-muted">
         Assign roles to staff. New accounts are created in the Supabase
         dashboard (Authentication → Users); they appear here once created.
       </p>
@@ -51,17 +51,17 @@ export default function UsersAdmin({ initialUsers }: { initialUsers: StaffUser[]
         {users.map((u) => (
           <li
             key={u.id}
-            className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-200 p-3"
+            className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-line p-3"
           >
             <div className="min-w-0">
               <p className="truncate font-medium">{u.email ?? u.id}</p>
-              <p className="text-xs text-gray-500">{u.fullName ?? "—"}</p>
+              <p className="text-xs text-muted">{u.fullName ?? "—"}</p>
             </div>
             <select
               value={u.role}
               onChange={(e) => void run(() => setUserRole(supabase, u.id, e.target.value as AppRole), "Role updated")}
               disabled={busy}
-              className="rounded-md border border-gray-300 px-2 py-1.5 text-sm"
+              className="rounded-md border border-line px-2 py-1.5 text-sm"
             >
               {APP_ROLE.map((r) => (
                 <option key={r} value={r}>

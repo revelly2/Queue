@@ -125,7 +125,7 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
 
       {step === "category" && (
         <section>
-          <p className="mb-4 text-center text-gray-500">What do you need today?</p>
+          <p className="mb-4 text-center text-muted">What do you need today?</p>
           <div className="grid gap-4">
             {availableCategories.map((c) => (
               <button
@@ -135,7 +135,7 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
                   setQty({});
                   setStep("services");
                 }}
-                className="rounded-xl border-2 border-gray-200 px-6 py-8 text-xl font-semibold transition hover:border-blue-500 hover:bg-blue-50"
+                className="rounded-xl border-2 border-line px-6 py-8 text-xl font-semibold transition hover:border-blue hover:bg-paper-dim"
               >
                 {CATEGORY_LABEL[c]}
               </button>
@@ -146,7 +146,7 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
 
       {step === "services" && (
         <section>
-          <button onClick={() => setStep("category")} className="mb-4 text-sm text-blue-600">
+          <button onClick={() => setStep("category")} className="mb-4 text-sm text-blue">
             ← Back
           </button>
           <h2 className="mb-4 text-xl font-semibold">
@@ -156,11 +156,11 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
             {catServices.map((s) => {
               const n = qty[s.id] ?? 0;
               return (
-                <li key={s.id} className="rounded-lg border border-gray-200 p-3">
+                <li key={s.id} className="rounded-lg border border-line p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <p className="font-medium">{s.name}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted">
                         {s.baseFee > 0 ? peso(s.baseFee) : "No fee"}
                         {s.isPerPage ? " / page" : ""}
                         {s.requiresDocstamp ? ` + ${peso(s.docstampFee)} docstamp` : ""}
@@ -170,14 +170,14 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setQuantity(s.id, n - 1)}
-                          className="h-9 w-9 rounded-md border border-gray-300 text-lg"
+                          className="h-9 w-9 rounded-md border border-line text-lg"
                         >
                           −
                         </button>
                         <span className="w-6 text-center font-semibold">{n}</span>
                         <button
                           onClick={() => setQuantity(s.id, n + 1)}
-                          className="h-9 w-9 rounded-md border border-gray-300 text-lg"
+                          className="h-9 w-9 rounded-md border border-line text-lg"
                         >
                           +
                         </button>
@@ -185,22 +185,22 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
                     ) : (
                       <button
                         onClick={() => setQuantity(s.id, 1)}
-                        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
+                        className="rounded-md bg-blue px-4 py-2 text-sm font-semibold text-white"
                       >
                         Add
                       </button>
                     )}
                   </div>
                   {n > 0 && s.isPerPage && (
-                    <p className="mt-1 text-xs text-gray-400">{n} page(s)</p>
+                    <p className="mt-1 text-xs text-muted">{n} page(s)</p>
                   )}
                 </li>
               );
             })}
           </ul>
 
-          <div className="mt-5 flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3">
-            <span className="text-sm text-gray-500">
+          <div className="mt-5 flex items-center justify-between rounded-lg bg-paper-dim px-4 py-3">
+            <span className="text-sm text-muted">
               Estimated total
               {assessment.paymentStatus === "NOT_APPLICABLE" ? " (no payment)" : ""}
             </span>
@@ -210,7 +210,7 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
           <button
             onClick={() => setStep("details")}
             disabled={selected.length === 0}
-            className="mt-4 w-full rounded-md bg-blue-600 px-4 py-3 text-base font-semibold text-white disabled:opacity-50"
+            className="mt-4 w-full rounded-md bg-blue px-4 py-3 text-base font-semibold text-white disabled:opacity-50"
           >
             Continue
           </button>
@@ -219,7 +219,7 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
 
       {step === "details" && (
         <section>
-          <button onClick={() => setStep("services")} className="mb-4 text-sm text-blue-600">
+          <button onClick={() => setStep("services")} className="mb-4 text-sm text-blue">
             ← Back
           </button>
           <h2 className="mb-4 text-xl font-semibold">Your details</h2>
@@ -236,21 +236,21 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
                 required
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
-                className="rounded-md border border-gray-300 px-3 py-3 text-base"
+                className="rounded-md border border-line px-3 py-3 text-base"
               />
             </label>
             <label className="flex flex-col gap-1 text-sm font-medium">
-              Student ID <span className="font-normal text-gray-400">(optional)</span>
+              Student ID <span className="font-normal text-muted">(optional)</span>
               <input
                 value={studentId}
                 onChange={(e) => setStudentId(e.target.value)}
-                className="rounded-md border border-gray-300 px-3 py-3 text-base"
+                className="rounded-md border border-line px-3 py-3 text-base"
               />
             </label>
             <button
               type="submit"
               disabled={busy}
-              className="rounded-md bg-blue-600 px-4 py-3 text-base font-semibold text-white disabled:opacity-50"
+              className="rounded-md bg-blue px-4 py-3 text-base font-semibold text-white disabled:opacity-50"
             >
               {busy ? "Generating…" : "Get Ticket"}
             </button>
@@ -260,7 +260,7 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
 
       {step === "ticket" && result && (
         <section className="text-center">
-          <p className="text-sm text-gray-500">Your ticket number</p>
+          <p className="text-sm text-muted">Your ticket number</p>
           <p className="my-2 text-5xl font-extrabold tracking-wide">{result.ticketNumber}</p>
 
           <div
@@ -275,7 +275,7 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
               : "Proceed to the window when called"}
           </div>
 
-          <div className="mx-auto max-w-sm rounded-lg border border-gray-200 p-4 text-left">
+          <div className="mx-auto max-w-sm rounded-lg border border-line p-4 text-left">
             <ul className="text-sm">
               {result.items.map((it, i) => (
                 <li key={i} className="flex justify-between py-0.5">
@@ -287,13 +287,13 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
                 </li>
               ))}
             </ul>
-            <div className="mt-2 flex justify-between border-t border-gray-100 pt-2 font-bold">
+            <div className="mt-2 flex justify-between border-t border-line pt-2 font-bold">
               <span>Total</span>
               <span>{peso(result.totalAssessed)}</span>
             </div>
           </div>
 
-          <p className="mt-3 text-sm text-gray-500">
+          <p className="mt-3 text-sm text-muted">
             {result.precedingCount} ahead of you in line
           </p>
 
@@ -301,13 +301,13 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
             <div className="mt-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={qr} alt="Scan to track your queue" className="mx-auto" width={220} height={220} />
-              <p className="mt-1 text-xs text-gray-400">Scan to track your place in line</p>
+              <p className="mt-1 text-xs text-muted">Scan to track your place in line</p>
             </div>
           )}
 
           <button
             onClick={reset}
-            className="mt-6 w-full rounded-md border border-gray-300 px-4 py-3 text-base font-semibold"
+            className="mt-6 w-full rounded-md border border-line px-4 py-3 text-base font-semibold"
           >
             Done
           </button>

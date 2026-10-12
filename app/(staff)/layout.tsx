@@ -40,7 +40,7 @@ export default async function StaffLayout({
     return (
       <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-4 px-4 text-center">
         <h1 className="text-xl font-bold">Not authorized</h1>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted">
           {user.email} has no staff role assigned. Ask an administrator for
           access.
         </p>

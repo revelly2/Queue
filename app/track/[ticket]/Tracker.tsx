@@ -30,13 +30,13 @@ export default function Tracker({
 
   return (
     <main className="mx-auto min-h-screen max-w-sm px-4 py-10">
-      <h1 className="text-center text-sm font-medium uppercase tracking-wide text-gray-500">
+      <h1 className="text-center text-sm font-medium uppercase tracking-wide text-muted">
         QueUA — Queue Tracker
       </h1>
       <p className="mt-2 text-center text-4xl font-extrabold">{ticketNumber}</p>
 
       {!snap.found ? (
-        <p className="mt-8 rounded-lg bg-gray-50 px-4 py-6 text-center text-gray-500">
+        <p className="mt-8 rounded-lg bg-paper-dim px-4 py-6 text-center text-muted">
           This ticket is not currently in the queue. It may have been completed,
           transferred, or marked no-show.
         </p>
@@ -50,11 +50,11 @@ export default function Tracker({
           Your ticket is on hold. Please wait or check with staff.
         </p>
       ) : (
-        <div className="mt-8 rounded-lg bg-blue-50 px-4 py-6 text-center">
-          <p className="text-5xl font-extrabold text-blue-700">{snap.ahead}</p>
-          <p className="mt-1 text-blue-700">ahead of you in line</p>
+        <div className="mt-8 rounded-lg bg-paper-dim px-4 py-6 text-center">
+          <p className="text-5xl font-extrabold text-blue">{snap.ahead}</p>
+          <p className="mt-1 text-blue">ahead of you in line</p>
           {snap.ahead <= 3 && (
-            <p className="mt-3 text-sm font-semibold text-blue-800">
+            <p className="mt-3 text-sm font-semibold text-blue">
               You&apos;re almost up — stay close!
             </p>
           )}
@@ -62,17 +62,17 @@ export default function Tracker({
       )}
 
       <section className="mt-8">
-        <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
+        <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
           Now serving
         </h2>
         {snap.serving.length === 0 ? (
-          <p className="text-sm text-gray-400">No tickets being served.</p>
+          <p className="text-sm text-muted">No tickets being served.</p>
         ) : (
           <ul className="flex flex-col gap-1 text-sm">
             {snap.serving.map((t) => (
-              <li key={t.ticketNumber} className="flex justify-between rounded-md border border-gray-200 px-3 py-2">
+              <li key={t.ticketNumber} className="flex justify-between rounded-md border border-line px-3 py-2">
                 <span className="font-semibold">{t.ticketNumber}</span>
-                <span className="text-gray-500">
+                <span className="text-muted">
                   {t.counterId ? `Window ${t.counterId}` : ""}
                 </span>
               </li>
@@ -81,7 +81,7 @@ export default function Tracker({
         )}
       </section>
 
-      <p className="mt-6 text-center text-xs text-gray-400">Updates automatically</p>
+      <p className="mt-6 text-center text-xs text-muted">Updates automatically</p>
     </main>
   );
 }

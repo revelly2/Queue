@@ -18,7 +18,7 @@ export default async function AdminPage() {
     return (
       <main className="mx-auto max-w-md px-4 py-16 text-center">
         <h1 className="text-xl font-bold">Not authorized</h1>
-        <p className="mt-2 text-sm text-gray-500">Admin access required.</p>
+        <p className="mt-2 text-sm text-muted">Admin access required.</p>
       </main>
     );
   }
@@ -30,14 +30,14 @@ export default async function AdminPage() {
           <Link
             key={s.href}
             href={s.href}
-            className="rounded-lg border border-gray-200 p-5 shadow-sm transition hover:border-blue-400"
+            className="rounded-lg border border-line p-5 shadow-sm transition hover:border-blue"
           >
             <p className="text-lg font-semibold">{s.title}</p>
-            <p className="mt-1 text-sm text-gray-500">{s.desc}</p>
+            <p className="mt-1 text-sm text-muted">{s.desc}</p>
           </Link>
         ))}
       </nav>
-      <p className="mt-6 text-xs text-gray-400">
+      <p className="mt-6 text-xs text-muted">
         Dynamic routing, users &amp; roles, live monitoring, and reports come in
         later phases.
       </p>

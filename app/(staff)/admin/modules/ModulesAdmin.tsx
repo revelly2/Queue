@@ -54,7 +54,7 @@ export default function ModulesAdmin({
   return (
     <main className="mx-auto max-w-3xl px-4 py-6">
       <h1 className="mb-1 text-2xl font-bold">Modules</h1>
-      <p className="mb-4 text-sm text-gray-500">
+      <p className="mb-4 text-sm text-muted">
         Group services into modules. Assign modules to counters on the Counters
         page.
       </p>
@@ -81,7 +81,7 @@ export default function ModulesAdmin({
             "Module created",
           ).then(() => setForm({ code: "", name: "", description: "" }));
         }}
-        className="mb-6 flex flex-wrap items-end gap-2 rounded-lg border border-gray-200 p-4"
+        className="mb-6 flex flex-wrap items-end gap-2 rounded-lg border border-line p-4"
       >
         <label className="flex flex-col gap-1 text-xs font-medium">
           Code
@@ -89,7 +89,7 @@ export default function ModulesAdmin({
             value={form.code}
             onChange={(e) => setForm({ ...form, code: e.target.value })}
             placeholder="APPLICATIONS"
-            className="w-36 rounded-md border border-gray-300 px-2 py-1.5 text-sm"
+            className="w-36 rounded-md border border-line px-2 py-1.5 text-sm"
           />
         </label>
         <label className="flex flex-1 flex-col gap-1 text-xs font-medium">
@@ -97,13 +97,13 @@ export default function ModulesAdmin({
           <input
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="rounded-md border border-gray-300 px-2 py-1.5 text-sm"
+            className="rounded-md border border-line px-2 py-1.5 text-sm"
           />
         </label>
         <button
           type="submit"
           disabled={busy}
-          className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          className="rounded-md bg-blue px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
           Add module
         </button>
@@ -113,9 +113,9 @@ export default function ModulesAdmin({
         {modules.map((m) => {
           const assigned = new Set(m.serviceIds);
           return (
-            <li key={m.id} className="rounded-lg border border-gray-200 p-4">
+            <li key={m.id} className="rounded-lg border border-line p-4">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded bg-gray-100 px-2 py-0.5 font-mono text-xs text-gray-600">
+                <span className="rounded bg-paper-dim px-2 py-0.5 font-mono text-xs text-muted">
                   {m.code}
                 </span>
                 <input
@@ -124,9 +124,9 @@ export default function ModulesAdmin({
                     const v = e.target.value.trim();
                     if (v && v !== m.name) void run(() => updateModule(supabase, m.id, { name: v }), "Module renamed");
                   }}
-                  className="min-w-0 flex-1 rounded-md border border-gray-300 px-2 py-1.5 text-sm font-medium"
+                  className="min-w-0 flex-1 rounded-md border border-line px-2 py-1.5 text-sm font-medium"
                 />
-                <label className="flex items-center gap-1 text-xs text-gray-600">
+                <label className="flex items-center gap-1 text-xs text-muted">
                   <input
                     type="checkbox"
                     defaultChecked={m.isActive}
@@ -148,8 +148,8 @@ export default function ModulesAdmin({
                 </button>
               </div>
 
-              <details className="mt-3 border-t border-gray-100 pt-3">
-                <summary className="cursor-pointer text-sm font-medium text-blue-600">
+              <details className="mt-3 border-t border-line pt-3">
+                <summary className="cursor-pointer text-sm font-medium text-blue">
                   Services ({m.serviceIds.length})
                 </summary>
                 <form
@@ -164,7 +164,7 @@ export default function ModulesAdmin({
                 >
                   {categories.map((cat) => (
                     <fieldset key={cat} className="mb-2">
-                      <legend className="text-xs font-semibold uppercase text-gray-400">
+                      <legend className="text-xs font-semibold uppercase text-muted">
                         {CATEGORY_LABEL[cat]}
                       </legend>
                       <div className="mt-1 flex flex-col gap-1">
@@ -187,7 +187,7 @@ export default function ModulesAdmin({
                   <button
                     type="submit"
                     disabled={busy}
-                    className="mt-1 rounded-md bg-gray-800 px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
+                    className="mt-1 rounded-md bg-ink px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
                   >
                     Save services
                   </button>
