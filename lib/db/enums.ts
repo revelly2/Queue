@@ -32,6 +32,9 @@ export type QueueStatus = (typeof QUEUE_STATUS)[number];
 export const COUNTER_STATUS = ["OPEN", "BUSY", "ON_BREAK", "CLOSED"] as const;
 export type CounterStatus = (typeof COUNTER_STATUS)[number];
 
+export const ACCESS_LEVEL = ["READ", "WRITE", "FULL"] as const;
+export type AccessLevel = (typeof ACCESS_LEVEL)[number];
+
 export const APP_ROLE = [
   "STUDENT",
   "REGISTRAR_OFFICER",
