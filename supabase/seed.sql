@@ -61,3 +61,60 @@ values
   (2, 'Window 2: Enrollment Forms',     'OPEN', '{ENROLLMENT_CHANGE}'),
   (3, 'Window 3: Clearances & Records', 'OPEN', '{ADMINISTRATIVE_FORM}')
 on conflict (counter_number) do nothing;
+
+-- ---------------------------------------------------------------------------
+-- Modules (default feature groupings). Admin can add/rename/reassign via UI.
+-- ---------------------------------------------------------------------------
+insert into public.modules (code, name, description)
+values
+  ('CREDENTIALS',  'Credentials',  'Transcripts, diplomas, certifications & authentications'),
+  ('ENROLLMENT',   'Enrollment',   'Changing/adding/dropping, completion, special exam permits'),
+  ('APPLICATIONS', 'Applications', 'Student application forms (graduation, shifting, LOA, etc.)'),
+  ('CLEARANCES',   'Clearances',   'Final clearance and withdrawal of registration')
+on conflict (code) do nothing;
+
+-- Map services into modules.
+-- CREDENTIALS = all CREDENTIAL_DOCUMENT services; ENROLLMENT = all ENROLLMENT_CHANGE.
+insert into public.module_services (module_id, service_id)
+select m.id, s.id
+from public.modules m
+join public.services s on s.category = 'CREDENTIAL_DOCUMENT'
+where m.code = 'CREDENTIALS'
+on conflict do nothing;
+
+insert into public.module_services (module_id, service_id)
+select m.id, s.id
+from public.modules m
+join public.services s on s.category = 'ENROLLMENT_CHANGE'
+where m.code = 'ENROLLMENT'
+on conflict do nothing;
+
+-- APPLICATIONS = the "Application for ..." forms + equivalency/cross-enroll/complaints.
+insert into public.module_services (module_id, service_id)
+select m.id, s.id
+from public.modules m
+join public.services s on s.code in (
+  'ADM_CORR','ADM_GRAD','ADM_LOA','ADM_OPEN','ADM_OVERLOAD','ADM_SHIFT',
+  'ADM_SUBST','ADM_SIMUL','ADM_EQUIV','ADM_CROSS','ADM_COMPLAINT'
+)
+where m.code = 'APPLICATIONS'
+on conflict do nothing;
+
+-- CLEARANCES = final clearance + withdrawal.
+insert into public.module_services (module_id, service_id)
+select m.id, s.id
+from public.modules m
+join public.services s on s.code in ('ADM_CLEAR','ADM_WITHDRAW')
+where m.code = 'CLEARANCES'
+on conflict do nothing;
+
+-- Assign modules to the sample counters (mirrors the original routing).
+insert into public.counter_modules (counter_id, module_id, access_level)
+select c.id, m.id, 'WRITE'::public.access_level
+from public.counters c
+join public.modules m on (
+  (c.counter_number = 1 and m.code = 'CREDENTIALS') or
+  (c.counter_number = 2 and m.code = 'ENROLLMENT') or
+  (c.counter_number = 3 and m.code in ('APPLICATIONS','CLEARANCES'))
+)
+on conflict (counter_id, module_id) do nothing;
