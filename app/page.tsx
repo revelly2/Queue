@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 const portals = [
-  { href: "/cashier", title: "Cashier", desc: "Clear assessed payments (staff)" },
-  { href: "/login", title: "Staff Sign In", desc: "Cashier & registrar login" },
+  { href: "/kiosk", title: "Check-in Kiosk", desc: "Get a queue ticket (students)" },
+  { href: "/login", title: "Staff Sign In", desc: "Cashier, registrar & admin" },
 ];
 
 export default function Home() {
