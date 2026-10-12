@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import {
   confirmPayment,
@@ -18,7 +17,6 @@ interface Props {
 }
 
 export default function CashierBoard({ initialPending, cashierLabel }: Props) {
-  const router = useRouter();
   // Create the browser client once (lazy init), not on every render.
   const [supabase] = useState(() => createClient());
 
@@ -75,25 +73,11 @@ export default function CashierBoard({ initialPending, cashierLabel }: Props) {
     [supabase],
   );
 
-  async function signOut() {
-    await supabase.auth.signOut();
-    router.push("/login");
-    router.refresh();
-  }
-
   return (
     <main className="mx-auto max-w-3xl px-4 py-6">
-      <header className="mb-6 flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">Cashier — Payment Clearance</h1>
-          <p className="text-sm text-gray-500">Signed in as {cashierLabel}</p>
-        </div>
-        <button
-          onClick={signOut}
-          className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium"
-        >
-          Sign out
-        </button>
+      <header className="mb-6">
+        <h1 className="text-2xl font-bold">Cashier — Payment Clearance</h1>
+        <p className="text-sm text-gray-500">Signed in as {cashierLabel}</p>
       </header>
 
       {/* Rapid clearance by ticket number / scan (FR-2.2) */}
