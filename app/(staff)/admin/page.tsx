@@ -9,6 +9,7 @@ const sections = [
   { href: "/admin/modules", title: "Modules", desc: "Create feature groupings and choose which services belong to each" },
   { href: "/admin/users", title: "Users & Roles", desc: "Assign roles to staff accounts" },
   { href: "/admin/reports", title: "Reports", desc: "Transaction volumes, wait vs handling times, CSV export" },
+  { href: "/admin/announcements", title: "Announcements", desc: "Manage the lobby display ticker messages" },
 ];
 
 export default async function AdminPage() {
