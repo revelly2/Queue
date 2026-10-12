@@ -16,13 +16,23 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
+      setLoading(false);
       setError(error.message);
       return;
     }
-    router.push("/cashier");
+    // Route to the landing that fits the signed-in role.
+    let dest = "/counter";
+    const uid = data.user?.id;
+    if (uid) {
+      const { data: profile } = await supabase.from("profiles").select("role").eq("id", uid).single();
+      const role = profile?.role;
+      if (role === "CASHIER") dest = "/cashier";
+      else if (role === "REGISTRAR_ADMIN" || role === "SYSTEM_ADMIN") dest = "/admin";
+    }
+    setLoading(false);
+    router.push(dest);
     router.refresh();
   }
 

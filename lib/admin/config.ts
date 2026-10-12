@@ -28,6 +28,7 @@ export interface AdminCounter {
   number: number;
   label: string;
   status: CounterStatus;
+  assignedStaffId: string | null;
   assignments: AdminAssignment[];
 }
 
@@ -36,6 +37,7 @@ interface CounterRow {
   counter_number: number;
   label_name: string;
   status: CounterStatus;
+  assigned_staff_id: string | null;
   counter_modules: Array<{
     id: number;
     access_level: AccessLevel;
@@ -48,7 +50,7 @@ export async function listCounters(sb: SupabaseClient): Promise<AdminCounter[]> 
   const data = check(
     await sb
       .from("counters")
-      .select("id,counter_number,label_name,status,counter_modules(id,access_level,module_id,modules(code,name))")
+      .select("id,counter_number,label_name,status,assigned_staff_id,counter_modules(id,access_level,module_id,modules(code,name))")
       .order("counter_number"),
     "load counters",
   ) as unknown as CounterRow[];
@@ -57,6 +59,7 @@ export async function listCounters(sb: SupabaseClient): Promise<AdminCounter[]> 
     number: c.counter_number,
     label: c.label_name,
     status: c.status,
+    assignedStaffId: c.assigned_staff_id,
     assignments: c.counter_modules.map((cm) => ({
       id: cm.id,
       moduleId: cm.module_id,

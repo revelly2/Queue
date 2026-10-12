@@ -39,6 +39,7 @@ export const APP_ROLE = [
   "STUDENT",
   "REGISTRAR_OFFICER",
   "CASHIER",
+  "COUNTER",
   "REGISTRAR_ADMIN",
   "SYSTEM_ADMIN",
 ] as const;

@@ -13,6 +13,7 @@ import {
   updateCounter,
   type AdminCounter,
 } from "@/lib/admin/config";
+import { createCounterAccount, removeCounterAccount } from "./actions";
 
 interface ModuleOpt {
   id: number;
@@ -23,9 +24,11 @@ interface ModuleOpt {
 export default function CountersAdmin({
   initialCounters,
   modules,
+  accounts,
 }: {
   initialCounters: AdminCounter[];
   modules: ModuleOpt[];
+  accounts: Record<string, string>;
 }) {
   const [supabase] = useState(() => createClient());
   const [counters, setCounters] = useState(initialCounters);
@@ -33,6 +36,8 @@ export default function CountersAdmin({
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
   const [newNumber, setNewNumber] = useState("");
   const [newLabel, setNewLabel] = useState("");
+  // Emails of logins created this session (server `accounts` map updates on reload).
+  const [localEmails, setLocalEmails] = useState<Record<number, string>>({});
 
   const run = useCallback(
     async (action: () => Promise<unknown>, okText: string) => {
@@ -208,6 +213,56 @@ export default function CountersAdmin({
                       <option key={m.id} value={m.id}>{m.name}</option>
                     ))}
                   </select>
+                )}
+              </div>
+
+              {/* Station login (dedicated COUNTER account) */}
+              <div className="mt-3 border-t border-line pt-3">
+                <p className="eyebrow mb-2">Station login</p>
+                {c.assignedStaffId ? (
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    <span className="mono flex-1 truncate">
+                      {accounts[c.assignedStaffId] ?? localEmails[c.id] ?? "login set"}
+                    </span>
+                    <button
+                      onClick={() => {
+                        if (confirm("Remove this station login? The account is deleted.")) {
+                          void run(async () => {
+                            const r = await removeCounterAccount({ counterId: c.id, deleteUser: true });
+                            if (!r.ok) throw new Error(r.error);
+                          }, "Station login removed");
+                        }
+                      }}
+                      disabled={busy}
+                      className="rounded-md border border-red-300 px-2 py-1 text-xs text-red-600"
+                    >
+                      Remove login
+                    </button>
+                  </div>
+                ) : (
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      const form = e.currentTarget;
+                      const fd = new FormData(form);
+                      const email = String(fd.get("email") ?? "").trim();
+                      const password = String(fd.get("password") ?? "");
+                      if (!email || !password) return;
+                      void run(async () => {
+                        const r = await createCounterAccount({ counterId: c.id, email, password });
+                        if (!r.ok) throw new Error(r.error);
+                        setLocalEmails((m) => ({ ...m, [c.id]: email }));
+                        form.reset();
+                      }, "Station login created");
+                    }}
+                    className="flex flex-wrap items-end gap-2"
+                  >
+                    <input name="email" type="email" placeholder="counter1@station.local" className="field flex-1 text-sm" />
+                    <input name="password" type="text" placeholder="password (8+ chars)" className="field text-sm" />
+                    <button type="submit" disabled={busy} className="btn btn-ghost text-sm">
+                      Create login
+                    </button>
+                  </form>
                 )}
               </div>
             </li>

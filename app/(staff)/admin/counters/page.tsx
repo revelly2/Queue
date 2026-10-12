@@ -1,4 +1,5 @@
 import { listCounters, listModules } from "@/lib/admin/config";
+import { listUsers } from "@/lib/admin/users";
 import { requireAdmin } from "@/lib/auth/admin";
 import CountersAdmin from "./CountersAdmin";
 
@@ -14,14 +15,18 @@ export default async function AdminCountersPage() {
       </main>
     );
   }
-  const [counters, modules] = await Promise.all([
+  const [counters, modules, users] = await Promise.all([
     listCounters(supabase),
     listModules(supabase),
+    listUsers(supabase),
   ]);
+  const accounts: Record<string, string> = {};
+  for (const u of users) if (u.email) accounts[u.id] = u.email;
   return (
     <CountersAdmin
       initialCounters={counters}
       modules={modules.map((m) => ({ id: m.id, code: m.code, name: m.name }))}
+      accounts={accounts}
     />
   );
 }

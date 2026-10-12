@@ -24,8 +24,10 @@ const LS_KEY = "queua.counter.selected";
 
 export default function CounterConsole({
   counters: initialCounters,
+  locked = false,
 }: {
   counters: OperableCounter[];
+  locked?: boolean;
 }) {
   const [supabase] = useState(() => createClient());
   const [counters, setCounters] = useState(initialCounters);
@@ -131,24 +133,28 @@ export default function CounterConsole({
     <main className="mx-auto max-w-3xl px-4 py-6">
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Counter Console</h1>
+          <h1 className="text-2xl font-bold">
+            {locked ? counter.label : "Counter Console"}
+          </h1>
           <p className="text-sm text-muted">
             {counter.modules.map((m) => m.name).join(", ") || "No modules assigned"}
             {counter.maxAccess ? ` · ${counter.maxAccess.toLowerCase()} access` : ""}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <select
-            value={counter.id}
-            onChange={(e) => setSelectedId(Number(e.target.value))}
-            className="rounded-md border border-line px-2 py-1.5 text-sm"
-          >
-            {counters.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.label}
-              </option>
-            ))}
-          </select>
+          {!locked && (
+            <select
+              value={counter.id}
+              onChange={(e) => setSelectedId(Number(e.target.value))}
+              className="rounded-md border border-line px-2 py-1.5 text-sm"
+            >
+              {counters.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          )}
           <select
             value={counter.status}
             onChange={(e) => void changeStatus(e.target.value as CounterStatus)}

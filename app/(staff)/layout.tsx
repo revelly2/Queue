@@ -10,6 +10,7 @@ export const instant = false;
 
 const STAFF_ROLES: AppRole[] = [
   "CASHIER",
+  "COUNTER",
   "REGISTRAR_OFFICER",
   "REGISTRAR_ADMIN",
   "SYSTEM_ADMIN",
