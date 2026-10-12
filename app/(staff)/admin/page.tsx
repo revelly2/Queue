@@ -4,8 +4,10 @@ import { requireAdmin } from "@/lib/auth/admin";
 export const instant = false;
 
 const sections = [
+  { href: "/admin/monitoring", title: "Live Monitoring", desc: "Window states, queue totals, and longest waits in real time" },
   { href: "/admin/counters", title: "Counters", desc: "Add, rename, set status, and assign modules with access levels" },
   { href: "/admin/modules", title: "Modules", desc: "Create feature groupings and choose which services belong to each" },
+  { href: "/admin/users", title: "Users & Roles", desc: "Assign roles to staff accounts" },
 ];
 
 export default async function AdminPage() {
