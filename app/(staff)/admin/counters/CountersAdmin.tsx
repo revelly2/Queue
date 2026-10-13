@@ -36,7 +36,6 @@ export default function CountersAdmin({
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
   const [newNumber, setNewNumber] = useState("");
   const [newLabel, setNewLabel] = useState("");
-  // Emails of logins created this session (server `accounts` map updates on reload).
   const [localEmails, setLocalEmails] = useState<Record<number, string>>({});
 
   const run = useCallback(
@@ -57,25 +56,18 @@ export default function CountersAdmin({
   );
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-6">
-      <h1 className="mb-1 text-2xl font-bold">Counters</h1>
-      <p className="mb-4 text-sm text-muted">
-        Add and rename counters, set status, and assign modules with access
-        levels.
-      </p>
+    <div className="mx-auto max-w-4xl">
+      <div className="mb-4">
+        <h1 className="text-xl font-bold">Counters</h1>
+        <p className="mt-0.5 text-xs text-muted">Add counters, set status, assign modules with access levels.</p>
+      </div>
 
       {notice && (
-        <p
-          role="status"
-          className={`mb-4 rounded-md px-3 py-2 text-sm ${
-            notice.ok ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-          }`}
-        >
+        <p role="status" className={`mb-3 rounded-lg px-3 py-2 text-xs ${notice.ok ? "bg-green-light text-green" : "bg-red-light text-red"}`}>
           {notice.text}
         </p>
       )}
 
-      {/* Create counter */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -86,42 +78,25 @@ export default function CountersAdmin({
             setNewLabel("");
           });
         }}
-        className="mb-6 flex flex-wrap items-end gap-2 rounded-lg border border-line p-4"
+        className="mb-4 flex flex-wrap items-end gap-2 card p-3.5"
       >
-        <label className="flex flex-col gap-1 text-xs font-medium">
-          Number
-          <input
-            type="number"
-            min={1}
-            value={newNumber}
-            onChange={(e) => setNewNumber(e.target.value)}
-            className="w-20 rounded-md border border-line px-2 py-1.5 text-sm"
-          />
+        <label className="flex flex-col gap-1">
+          <span className="section-label">Number</span>
+          <input type="number" min={1} value={newNumber} onChange={(e) => setNewNumber(e.target.value)} className="field w-20 text-xs" />
         </label>
-        <label className="flex flex-1 flex-col gap-1 text-xs font-medium">
-          Label
-          <input
-            value={newLabel}
-            onChange={(e) => setNewLabel(e.target.value)}
-            placeholder="Counter 1 (Application Counter)"
-            className="rounded-md border border-line px-2 py-1.5 text-sm"
-          />
+        <label className="flex flex-1 flex-col gap-1">
+          <span className="section-label">Label</span>
+          <input value={newLabel} onChange={(e) => setNewLabel(e.target.value)} placeholder="Counter 1 (Applications)" className="field text-xs" />
         </label>
-        <button
-          type="submit"
-          disabled={busy}
-          className="rounded-md bg-blue px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
-        >
-          Add counter
-        </button>
+        <button type="submit" disabled={busy} className="btn btn-accent">Add counter</button>
       </form>
 
-      <ul className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2.5">
         {counters.map((c) => {
           const assignedIds = new Set(c.assignments.map((a) => a.moduleId));
           const available = modules.filter((m) => !assignedIds.has(m.id));
           return (
-            <li key={c.id} className="rounded-lg border border-line p-4">
+            <div key={c.id} className="card p-3.5">
               <div className="flex flex-wrap items-center gap-2">
                 <input
                   type="number"
@@ -130,7 +105,7 @@ export default function CountersAdmin({
                     const n = Number(e.target.value);
                     if (n && n !== c.number) void run(() => updateCounter(supabase, c.id, { number: n }), "Number updated");
                   }}
-                  className="w-16 rounded-md border border-line px-2 py-1.5 text-sm"
+                  className="field w-16 text-xs"
                 />
                 <input
                   defaultValue={c.label}
@@ -138,13 +113,13 @@ export default function CountersAdmin({
                     const v = e.target.value.trim();
                     if (v && v !== c.label) void run(() => updateCounter(supabase, c.id, { label: v }), "Label updated");
                   }}
-                  className="min-w-0 flex-1 rounded-md border border-line px-2 py-1.5 text-sm"
+                  className="field min-w-0 flex-1 text-xs font-medium"
                 />
                 <select
                   value={c.status}
                   onChange={(e) => void run(() => updateCounter(supabase, c.id, { status: e.target.value as CounterStatus }), "Status updated")}
                   disabled={busy}
-                  className="rounded-md border border-line px-2 py-1.5 text-sm"
+                  className="field text-xs py-1.5"
                 >
                   {COUNTER_STATUS.map((s) => (
                     <option key={s} value={s}>{s}</option>
@@ -157,29 +132,26 @@ export default function CountersAdmin({
                     }
                   }}
                   disabled={busy}
-                  className="rounded-md border border-red-300 px-2 py-1.5 text-sm text-red-600 disabled:opacity-50"
+                  className="btn btn-danger text-[11px]"
                 >
                   Delete
                 </button>
               </div>
 
-              {/* Assignments */}
-              <div className="mt-3 border-t border-line pt-3">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-                  Modules
-                </p>
+              <div className="mt-3 border-t border-line-dim pt-3">
+                <p className="section-label mb-2">Modules</p>
                 {c.assignments.length === 0 ? (
-                  <p className="text-sm text-muted">No modules assigned.</p>
+                  <p className="text-xs text-muted">No modules assigned.</p>
                 ) : (
-                  <ul className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1">
                     {c.assignments.map((a) => (
-                      <li key={a.id} className="flex items-center gap-2 text-sm">
+                      <div key={a.id} className="flex items-center gap-2 text-xs">
                         <span className="flex-1">{a.moduleName}</span>
                         <select
                           value={a.accessLevel}
                           onChange={(e) => void run(() => updateAssignment(supabase, a.id, e.target.value as AccessLevel), "Access updated")}
                           disabled={busy}
-                          className="rounded-md border border-line px-2 py-1 text-sm"
+                          className="field py-1 text-[11px]"
                         >
                           {ACCESS_LEVEL.map((lvl) => (
                             <option key={lvl} value={lvl}>{lvl}</option>
@@ -188,13 +160,13 @@ export default function CountersAdmin({
                         <button
                           onClick={() => void run(() => removeAssignment(supabase, a.id), "Module removed")}
                           disabled={busy}
-                          className="rounded-md border border-line px-2 py-1 text-xs"
+                          className="btn btn-ghost text-[11px]"
                         >
                           Remove
                         </button>
-                      </li>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 )}
 
                 {available.length > 0 && (
@@ -206,7 +178,7 @@ export default function CountersAdmin({
                       e.target.value = "";
                     }}
                     disabled={busy}
-                    className="mt-2 rounded-md border border-line px-2 py-1.5 text-sm"
+                    className="field mt-2 text-xs py-1.5"
                   >
                     <option value="">+ Assign module…</option>
                     {available.map((m) => (
@@ -216,12 +188,11 @@ export default function CountersAdmin({
                 )}
               </div>
 
-              {/* Station login (dedicated COUNTER account) */}
-              <div className="mt-3 border-t border-line pt-3">
-                <p className="eyebrow mb-2">Station login</p>
+              <div className="mt-3 border-t border-line-dim pt-3">
+                <p className="section-label mb-2">Station login</p>
                 {c.assignedStaffId ? (
-                  <div className="flex flex-wrap items-center gap-2 text-sm">
-                    <span className="mono flex-1 truncate">
+                  <div className="flex flex-wrap items-center gap-2 text-xs">
+                    <span className="mono flex-1 truncate text-muted">
                       {accounts[c.assignedStaffId] ?? localEmails[c.id] ?? "login set"}
                     </span>
                     <button
@@ -234,7 +205,7 @@ export default function CountersAdmin({
                         }
                       }}
                       disabled={busy}
-                      className="rounded-md border border-red-300 px-2 py-1 text-xs text-red-600"
+                      className="btn btn-danger text-[11px]"
                     >
                       Remove login
                     </button>
@@ -257,18 +228,16 @@ export default function CountersAdmin({
                     }}
                     className="flex flex-wrap items-end gap-2"
                   >
-                    <input name="email" type="email" placeholder="counter1@station.local" className="field flex-1 text-sm" />
-                    <input name="password" type="text" placeholder="password (8+ chars)" className="field text-sm" />
-                    <button type="submit" disabled={busy} className="btn btn-ghost text-sm">
-                      Create login
-                    </button>
+                    <input name="email" type="email" placeholder="counter1@station.local" className="field flex-1 text-xs" />
+                    <input name="password" type="text" placeholder="password (8+ chars)" className="field text-xs" />
+                    <button type="submit" disabled={busy} className="btn btn-ghost text-xs">Create login</button>
                   </form>
                 )}
               </div>
-            </li>
+            </div>
           );
         })}
-      </ul>
-    </main>
+      </div>
+    </div>
   );
 }

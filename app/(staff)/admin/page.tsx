@@ -4,43 +4,44 @@ import { requireAdmin } from "@/lib/auth/admin";
 export const instant = false;
 
 const sections = [
-  { href: "/admin/monitoring", title: "Live Monitoring", desc: "Window states, queue totals, and longest waits in real time" },
-  { href: "/admin/counters", title: "Counters", desc: "Add, rename, set status, and assign modules with access levels" },
-  { href: "/admin/modules", title: "Modules", desc: "Create feature groupings and choose which services belong to each" },
-  { href: "/admin/users", title: "Users & Roles", desc: "Assign roles to staff accounts" },
-  { href: "/admin/reports", title: "Reports", desc: "Transaction volumes, wait vs handling times, CSV export" },
-  { href: "/admin/announcements", title: "Announcements", desc: "Manage the lobby display ticker messages" },
+  { href: "/admin/monitoring", title: "Live Monitoring", desc: "Window states, queue totals, longest waits", accent: true },
+  { href: "/admin/reports", title: "Reports", desc: "Volume metrics, wait times, CSV export", accent: false },
+  { href: "/admin/counters", title: "Counters", desc: "Add, rename, assign modules & access levels", accent: false },
+  { href: "/admin/modules", title: "Modules", desc: "Service groupings for counter routing", accent: false },
+  { href: "/admin/users", title: "Users & Roles", desc: "Assign staff roles to accounts", accent: false },
+  { href: "/admin/announcements", title: "Announcements", desc: "Manage lobby display ticker", accent: false },
 ];
 
 export default async function AdminPage() {
   const { ok } = await requireAdmin();
   if (!ok) {
     return (
-      <main className="mx-auto max-w-md px-4 py-16 text-center">
-        <h1 className="text-xl font-bold">Not authorized</h1>
-        <p className="mt-2 text-sm text-muted">Admin access required.</p>
-      </main>
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-lg font-bold">Not authorized</h1>
+          <p className="mt-1 text-xs text-muted">Admin access required.</p>
+        </div>
+      </div>
     );
   }
   return (
-    <main className="mx-auto max-w-3xl px-4 py-6">
-      <h1 className="mb-4 text-2xl font-bold">Admin</h1>
-      <nav className="grid gap-4 sm:grid-cols-2">
+    <div className="mx-auto max-w-4xl">
+      <div className="mb-5">
+        <h1 className="text-xl font-bold">Dashboard</h1>
+        <p className="mt-0.5 text-xs text-muted">Registrar queue administration</p>
+      </div>
+      <nav className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
         {sections.map((s) => (
           <Link
             key={s.href}
             href={s.href}
-            className="rounded-lg border border-line p-5 shadow-sm transition hover:border-blue"
+            className={`card group p-4 transition hover:border-accent ${s.accent ? "border-accent-border bg-accent-light" : ""}`}
           >
-            <p className="text-lg font-semibold">{s.title}</p>
-            <p className="mt-1 text-sm text-muted">{s.desc}</p>
+            <p className="text-sm font-semibold">{s.title}</p>
+            <p className="mt-1 text-xs text-muted">{s.desc}</p>
           </Link>
         ))}
       </nav>
-      <p className="mt-6 text-xs text-muted">
-        Dynamic routing, users &amp; roles, live monitoring, and reports come in
-        later phases.
-      </p>
-    </main>
+    </div>
   );
 }

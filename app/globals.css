@@ -1,69 +1,90 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Vellum · Kinetic Type — design system
-   Palette + type adapted from the reference (not copied).
+   Nock · Activation — SaaS dashboard design system
+   Warm stone palette, Plus Jakarta Sans, dense data UI.
+   Adapted from the reference — not copied.
    ============================================================ */
 :root {
-  --paper: #f4f3ee;
-  --paper-dim: #eceae2;
-  --ink: #151513;
-  --ink-soft: #2a2a26;
-  --muted: #6d6d66;
-  --line: #d7d6cf;
-  --acid: #d6ff3f;
-  --blue: #3458f4;
+  --bg: #f6f4f1;
+  --surface: #ffffff;
+  --ink: #1c1917;
+  --ink-soft: #44403c;
+  --muted: #78716c;
+  --faint: #a8a29e;
+  --line: #e7e5e4;
+  --line-dim: #f0eee9;
+  --accent: #c2410c;
+  --accent-light: #fff7ed;
+  --accent-border: #fed7aa;
+  --accent-text: #9a3412;
+  --green: #15803d;
+  --green-light: #f0fdf4;
+  --red: #b42318;
+  --red-light: #fef2f2;
+  --amber: #b45309;
+  --amber-light: #fffbeb;
 
-  --background: var(--paper);
+  --background: var(--bg);
   --foreground: var(--ink);
-  --radius: 3px;
+  --radius: 8px;
+  --radius-sm: 4px;
+  --radius-lg: 12px;
+  --radius-pill: 99px;
   color-scheme: light;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-paper: var(--paper);
-  --color-paper-dim: var(--paper-dim);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-muted: var(--muted);
+  --color-faint: var(--faint);
   --color-line: var(--line);
-  --color-acid: var(--acid);
-  --color-blue: var(--blue);
+  --color-line-dim: var(--line-dim);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-accent-border: var(--accent-border);
+  --color-accent-text: var(--accent-text);
+  --color-green: var(--green);
+  --color-green-light: var(--green-light);
+  --color-red: var(--red);
+  --color-red-light: var(--red-light);
+  --color-amber: var(--amber);
+  --color-amber-light: var(--amber-light);
 
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-serif: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
 }
 
 /* ---- Base ---- */
 body {
-  background: var(--paper);
+  background: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
+  font-size: 13px;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-h1 {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -0.015em;
+h1, h2, h3 {
+  font-weight: 700;
+  letter-spacing: -0.04em;
 }
 
 ::selection {
-  background: var(--acid);
-  color: var(--ink);
+  background: var(--accent-light);
+  color: var(--accent);
 }
 
 :focus-visible {
-  outline: 2px solid var(--blue);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* Keep native date/number controls on-brand (light). */
 input,
 select,
 textarea,
@@ -71,29 +92,51 @@ button {
   font-family: inherit;
 }
 
-/* ---- Kinetic type ---- */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+select,
+textarea {
+  background-color: #fff;
+}
+
+input,
+textarea {
+  caret-color: var(--accent);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--line);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---- Animations ---- */
 @keyframes kinetic-rise {
   from {
     opacity: 0;
     transform: translateY(0.35em);
-    letter-spacing: 0.02em;
   }
   to {
     opacity: 1;
     transform: none;
-    letter-spacing: -0.015em;
   }
 }
 .kinetic {
-  animation: kinetic-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: kinetic-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 @keyframes marquee {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(-100%);
-  }
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
 }
 @media (prefers-reduced-motion: reduce) {
   .kinetic,
@@ -105,19 +148,21 @@ button {
 
 /* ---- Component vocabulary ---- */
 @layer components {
-  .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
+  /* Section label — 10px uppercase tracking */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--muted);
+    color: var(--faint);
+    font-weight: 500;
   }
 
-  .display {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    line-height: 1.02;
-    letter-spacing: -0.02em;
+  /* Data display — tight tracking, heavy weight */
+  .data-value {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
   }
 
   .mono {
@@ -125,31 +170,56 @@ button {
     font-variant-numeric: tabular-nums;
   }
 
+  /* Cards — white surface, stone border, 12px radius */
   .card {
+    background: var(--surface);
     border: 1px solid var(--line);
-    background: color-mix(in srgb, var(--paper) 60%, white);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
+    padding: 12px 14px;
   }
 
+  /* Metric card — compact stat tile */
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 12px 14px;
+  }
+  .metric-card .metric-label {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .metric-card .metric-value {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    margin: 2px 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .metric-card .metric-delta {
+    font-size: 11px;
+    font-weight: 650;
+  }
+  .metric-card .metric-delta.up { color: var(--green); }
+  .metric-card .metric-delta.down { color: var(--red); }
+
+  /* Buttons */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
     border-radius: var(--radius);
-    padding: 0.55rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
     line-height: 1;
     border: 1px solid transparent;
     transition:
       background-color 0.15s ease,
       color 0.15s ease,
-      border-color 0.15s ease,
-      transform 0.05s ease;
-  }
-  .btn:active {
-    transform: translateY(1px);
+      border-color 0.15s ease;
+    cursor: pointer;
   }
   .btn:disabled {
     opacity: 0.45;
@@ -157,21 +227,17 @@ button {
   }
   .btn-primary {
     background: var(--ink);
-    color: var(--paper);
+    color: #fff;
   }
   .btn-primary:hover {
     background: var(--ink-soft);
   }
   .btn-accent {
-    background: var(--blue);
+    background: var(--accent);
     color: #fff;
   }
   .btn-accent:hover {
-    filter: brightness(1.08);
-  }
-  .btn-acid {
-    background: var(--acid);
-    color: var(--ink);
+    filter: brightness(1.1);
   }
   .btn-ghost {
     background: transparent;
@@ -179,40 +245,83 @@ button {
     border-color: var(--line);
   }
   .btn-ghost:hover {
-    background: var(--paper-dim);
+    background: var(--bg);
   }
   .btn-danger {
     background: transparent;
-    color: #b42318;
+    color: var(--red);
     border-color: #e5bdb8;
   }
   .btn-danger:hover {
-    background: #fbeceb;
+    background: var(--red-light);
   }
 
+  /* Input fields */
   .field {
     border-radius: var(--radius);
     border: 1px solid var(--line);
     background: #fff;
-    padding: 0.55rem 0.75rem;
-    font-size: 0.95rem;
+    padding: 8px 12px;
+    font-size: 13px;
     color: var(--ink);
   }
   .field:focus {
     outline: none;
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 18%, transparent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
   }
 
+  /* Status pill */
   .pill {
     display: inline-flex;
     align-items: center;
-    border-radius: 999px;
-    padding: 0.1rem 0.6rem;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    border-radius: var(--radius-pill);
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* Nav item in sidebar */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--radius);
+    margin-bottom: 2px;
+    font-size: 13px;
     font-weight: 500;
+    color: var(--ink-soft);
+    transition: background-color 0.12s ease, color 0.12s ease;
+  }
+  .nav-item:hover {
+    background: var(--bg);
+  }
+  .nav-item.active {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 650;
+  }
+  .nav-item .nav-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: var(--radius-sm);
+    flex: 0 0 auto;
+  }
+  .nav-item.active .nav-dot {
+    background: var(--accent);
+  }
+  .nav-item:not(.active) .nav-dot {
+    background: var(--line);
+  }
+
+  /* Eyebrow — backwards compat alias */
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    color: var(--faint);
+    font-weight: 500;
   }
 }

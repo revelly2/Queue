@@ -56,7 +56,6 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
   );
 
   const selected = catServices.filter((s) => (qty[s.id] ?? 0) > 0);
-  // Cheap pure computation — no memo needed.
   const assessment = assess(
     selected.map((s) => {
       const spec: FeeServiceSpec = {
@@ -115,29 +114,26 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
 
   return (
     <main className="mx-auto min-h-screen max-w-xl px-4 py-8">
-      <h1 className="mb-6 text-center text-3xl font-bold">QueUA Check-in</h1>
+      <div className="mb-6 flex items-center gap-2.5">
+        <span className="grid h-8 w-8 place-items-center rounded-[7px] bg-accent text-xs font-extrabold text-white">Q</span>
+        <span className="text-lg font-bold" style={{ letterSpacing: "-0.04em" }}>Check-in</span>
+      </div>
 
       {error && (
-        <p role="alert" className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-          {error}
-        </p>
+        <p role="alert" className="mb-3 rounded-lg bg-red-light px-3 py-2 text-xs text-red">{error}</p>
       )}
 
       {step === "category" && (
         <section>
-          <p className="mb-4 text-center text-muted">What do you need today?</p>
-          <div className="grid gap-4">
+          <p className="mb-4 text-sm text-muted">What do you need today?</p>
+          <div className="grid gap-2.5">
             {availableCategories.map((c) => (
               <button
                 key={c}
-                onClick={() => {
-                  setCategory(c);
-                  setQty({});
-                  setStep("services");
-                }}
-                className="rounded-xl border-2 border-line px-6 py-8 text-xl font-semibold transition hover:border-blue hover:bg-paper-dim"
+                onClick={() => { setCategory(c); setQty({}); setStep("services"); }}
+                className="card group p-5 text-left transition hover:border-accent"
               >
-                {CATEGORY_LABEL[c]}
+                <span className="text-base font-semibold">{CATEGORY_LABEL[c]}</span>
               </button>
             ))}
           </div>
@@ -146,21 +142,17 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
 
       {step === "services" && (
         <section>
-          <button onClick={() => setStep("category")} className="mb-4 text-sm text-blue">
-            ← Back
-          </button>
-          <h2 className="mb-4 text-xl font-semibold">
-            {category ? CATEGORY_LABEL[category] : ""}
-          </h2>
-          <ul className="flex flex-col gap-2">
+          <button onClick={() => setStep("category")} className="mb-3 text-xs font-medium text-accent">← Back</button>
+          <h2 className="mb-3 text-base font-semibold">{category ? CATEGORY_LABEL[category] : ""}</h2>
+          <div className="flex flex-col gap-1.5">
             {catServices.map((s) => {
               const n = qty[s.id] ?? 0;
               return (
-                <li key={s.id} className="rounded-lg border border-line p-3">
+                <div key={s.id} className="card p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="font-medium">{s.name}</p>
-                      <p className="text-xs text-muted">
+                      <p className="text-sm font-medium">{s.name}</p>
+                      <p className="text-[11px] text-muted">
                         {s.baseFee > 0 ? peso(s.baseFee) : "No fee"}
                         {s.isPerPage ? " / page" : ""}
                         {s.requiresDocstamp ? ` + ${peso(s.docstampFee)} docstamp` : ""}
@@ -168,49 +160,34 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
                     </div>
                     {n > 0 ? (
                       <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setQuantity(s.id, n - 1)}
-                          className="h-9 w-9 rounded-md border border-line text-lg"
-                        >
-                          −
-                        </button>
-                        <span className="w-6 text-center font-semibold">{n}</span>
-                        <button
-                          onClick={() => setQuantity(s.id, n + 1)}
-                          className="h-9 w-9 rounded-md border border-line text-lg"
-                        >
-                          +
-                        </button>
+                        <button onClick={() => setQuantity(s.id, n - 1)} className="btn btn-ghost h-8 w-8 p-0 text-base">−</button>
+                        <span className="w-6 text-center text-sm font-semibold tabular-nums">{n}</span>
+                        <button onClick={() => setQuantity(s.id, n + 1)} className="btn btn-ghost h-8 w-8 p-0 text-base">+</button>
                       </div>
                     ) : (
-                      <button
-                        onClick={() => setQuantity(s.id, 1)}
-                        className="rounded-md bg-blue px-4 py-2 text-sm font-semibold text-white"
-                      >
-                        Add
-                      </button>
+                      <button onClick={() => setQuantity(s.id, 1)} className="btn btn-accent text-xs">Add</button>
                     )}
                   </div>
                   {n > 0 && s.isPerPage && (
-                    <p className="mt-1 text-xs text-muted">{n} page(s)</p>
+                    <p className="mt-1 text-[11px] text-muted">{n} page(s)</p>
                   )}
-                </li>
+                </div>
               );
             })}
-          </ul>
+          </div>
 
-          <div className="mt-5 flex items-center justify-between rounded-lg bg-paper-dim px-4 py-3">
-            <span className="text-sm text-muted">
+          <div className="mt-4 flex items-center justify-between rounded-lg bg-bg px-4 py-3">
+            <span className="text-xs text-muted">
               Estimated total
               {assessment.paymentStatus === "NOT_APPLICABLE" ? " (no payment)" : ""}
             </span>
-            <span className="text-lg font-bold">{peso(assessment.total)}</span>
+            <span className="text-base font-bold tabular-nums">{peso(assessment.total)}</span>
           </div>
 
           <button
             onClick={() => setStep("details")}
             disabled={selected.length === 0}
-            className="mt-4 w-full rounded-md bg-blue px-4 py-3 text-base font-semibold text-white disabled:opacity-50"
+            className="mt-3 w-full btn btn-accent py-3 text-sm"
           >
             Continue
           </button>
@@ -219,39 +196,21 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
 
       {step === "details" && (
         <section>
-          <button onClick={() => setStep("services")} className="mb-4 text-sm text-blue">
-            ← Back
-          </button>
-          <h2 className="mb-4 text-xl font-semibold">Your details</h2>
+          <button onClick={() => setStep("services")} className="mb-3 text-xs font-medium text-accent">← Back</button>
+          <h2 className="mb-3 text-base font-semibold">Your details</h2>
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              void submit();
-            }}
-            className="flex flex-col gap-4"
+            onSubmit={(e) => { e.preventDefault(); void submit(); }}
+            className="flex flex-col gap-3"
           >
-            <label className="flex flex-col gap-1 text-sm font-medium">
-              Full name
-              <input
-                required
-                value={studentName}
-                onChange={(e) => setStudentName(e.target.value)}
-                className="rounded-md border border-line px-3 py-3 text-base"
-              />
+            <label className="flex flex-col gap-1">
+              <span className="section-label">Full name</span>
+              <input required value={studentName} onChange={(e) => setStudentName(e.target.value)} className="field" />
             </label>
-            <label className="flex flex-col gap-1 text-sm font-medium">
-              Student ID <span className="font-normal text-muted">(optional)</span>
-              <input
-                value={studentId}
-                onChange={(e) => setStudentId(e.target.value)}
-                className="rounded-md border border-line px-3 py-3 text-base"
-              />
+            <label className="flex flex-col gap-1">
+              <span className="section-label">Student ID <span className="normal-case font-normal text-muted">(optional)</span></span>
+              <input value={studentId} onChange={(e) => setStudentId(e.target.value)} className="field" />
             </label>
-            <button
-              type="submit"
-              disabled={busy}
-              className="rounded-md bg-blue px-4 py-3 text-base font-semibold text-white disabled:opacity-50"
-            >
+            <button type="submit" disabled={busy} className="btn btn-accent py-3 text-sm">
               {busy ? "Generating…" : "Get Ticket"}
             </button>
           </form>
@@ -260,57 +219,45 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
 
       {step === "ticket" && result && (
         <section className="text-center">
-          <p className="text-sm text-muted">Your ticket number</p>
-          <p className="my-2 text-5xl font-extrabold tracking-wide">{result.ticketNumber}</p>
+          <p className="text-xs text-muted">Your ticket number</p>
+          <p className="my-2 data-value text-5xl">{result.ticketNumber}</p>
 
-          <div
-            className={`mx-auto mb-4 inline-block rounded-full px-4 py-1 text-sm font-semibold ${
-              result.paymentStatus === "PAYMENT_PENDING"
-                ? "bg-amber-100 text-amber-800"
-                : "bg-green-100 text-green-800"
-            }`}
-          >
+          <div className={`mx-auto mb-4 inline-block pill text-xs ${
+            result.paymentStatus === "PAYMENT_PENDING"
+              ? "bg-amber-light text-amber border border-accent-border"
+              : "bg-green-light text-green"
+          }`} style={{ padding: "4px 12px" }}>
             {result.paymentStatus === "PAYMENT_PENDING"
               ? `Pay ${peso(result.totalAssessed)} at the Cashier first`
               : "Proceed to the window when called"}
           </div>
 
-          <div className="mx-auto max-w-sm rounded-lg border border-line p-4 text-left">
-            <ul className="text-sm">
+          <div className="mx-auto max-w-sm card p-3.5 text-left">
+            <div className="text-xs">
               {result.items.map((it, i) => (
-                <li key={i} className="flex justify-between py-0.5">
-                  <span>
-                    {it.name}
-                    {it.quantity > 1 ? ` ×${it.quantity}` : ""}
-                  </span>
-                  <span>{peso(it.computedFee)}</span>
-                </li>
+                <div key={i} className="flex justify-between py-0.5">
+                  <span>{it.name}{it.quantity > 1 ? ` ×${it.quantity}` : ""}</span>
+                  <span className="tabular-nums">{peso(it.computedFee)}</span>
+                </div>
               ))}
-            </ul>
-            <div className="mt-2 flex justify-between border-t border-line pt-2 font-bold">
+            </div>
+            <div className="mt-2 flex justify-between border-t border-line-dim pt-2 text-sm font-bold">
               <span>Total</span>
-              <span>{peso(result.totalAssessed)}</span>
+              <span className="tabular-nums">{peso(result.totalAssessed)}</span>
             </div>
           </div>
 
-          <p className="mt-3 text-sm text-muted">
-            {result.precedingCount} ahead of you in line
-          </p>
+          <p className="mt-3 text-xs text-muted">{result.precedingCount} ahead of you in line</p>
 
           {qr && (
             <div className="mt-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={qr} alt="Scan to track your queue" className="mx-auto" width={220} height={220} />
-              <p className="mt-1 text-xs text-muted">Scan to track your place in line</p>
+              <p className="mt-1 text-[11px] text-muted">Scan to track your place in line</p>
             </div>
           )}
 
-          <button
-            onClick={reset}
-            className="mt-6 w-full rounded-md border border-line px-4 py-3 text-base font-semibold"
-          >
-            Done
-          </button>
+          <button onClick={reset} className="mt-5 w-full btn btn-ghost py-3 text-sm">Done</button>
         </section>
       )}
     </main>

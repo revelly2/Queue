@@ -57,7 +57,6 @@ export default function CounterConsole({
     }
   }, [supabase, selectedId, moduleIds]);
 
-  // Restore last-used counter on mount.
   useEffect(() => {
     try {
       const saved = localStorage.getItem(LS_KEY);
@@ -70,7 +69,6 @@ export default function CounterConsole({
     }
   }, [counters]);
 
-  // Load board + subscribe to live updates when the selected counter changes.
   useEffect(() => {
     if (selectedId == null) return;
     try {
@@ -123,20 +121,20 @@ export default function CounterConsole({
 
   if (!counter) {
     return (
-      <main className="mx-auto max-w-3xl px-4 py-16 text-center text-muted">
+      <div className="flex min-h-[60vh] items-center justify-center text-xs text-muted">
         No counters are configured. Ask an administrator to create one.
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-6">
+    <div className="mx-auto max-w-4xl">
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-xl font-bold">
             {locked ? counter.label : "Counter Console"}
           </h1>
-          <p className="text-sm text-muted">
+          <p className="mt-0.5 text-xs text-muted">
             {counter.modules.map((m) => m.name).join(", ") || "No modules assigned"}
             {counter.maxAccess ? ` · ${counter.maxAccess.toLowerCase()} access` : ""}
           </p>
@@ -146,12 +144,10 @@ export default function CounterConsole({
             <select
               value={counter.id}
               onChange={(e) => setSelectedId(Number(e.target.value))}
-              className="rounded-md border border-line px-2 py-1.5 text-sm"
+              className="field text-xs py-1.5"
             >
               {counters.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.label}
-                </option>
+                <option key={c.id} value={c.id}>{c.label}</option>
               ))}
             </select>
           )}
@@ -159,13 +155,11 @@ export default function CounterConsole({
             value={counter.status}
             onChange={(e) => void changeStatus(e.target.value as CounterStatus)}
             disabled={busy}
-            className="rounded-md border border-line px-2 py-1.5 text-sm"
+            className="field text-xs py-1.5"
             title="Counter status"
           >
             {COUNTER_STATUS.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
+              <option key={s} value={s}>{s}</option>
             ))}
           </select>
         </div>
@@ -176,32 +170,27 @@ export default function CounterConsole({
           void run(() => callNext(supabase, counter.id), "Called next ticket")
         }
         disabled={busy || !canWrite || counter.status === "CLOSED"}
-        className="mb-4 w-full rounded-md bg-blue px-4 py-3 text-base font-semibold text-white disabled:opacity-50"
+        className="mb-4 w-full btn btn-accent py-3 text-sm"
       >
         Call Next
       </button>
 
       {notice && (
-        <p
-          role="status"
-          className={`mb-4 rounded-md px-3 py-2 text-sm ${
-            notice.ok ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-          }`}
-        >
+        <p role="status" className={`mb-3 rounded-lg px-3 py-2 text-xs ${notice.ok ? "bg-green-light text-green" : "bg-red-light text-red"}`}>
           {notice.text}
         </p>
       )}
 
-      <section className="mb-6">
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
-          Now serving ({board.serving.length})
-        </h2>
+      <section className="mb-4">
+        <div className="flex items-baseline justify-between mb-2">
+          <span className="section-label">Now serving ({board.serving.length})</span>
+        </div>
         {board.serving.length === 0 ? (
-          <p className="rounded-md border border-dashed border-line px-4 py-6 text-center text-muted">
+          <div className="card py-8 text-center text-xs text-muted">
             Nothing being served.
-          </p>
+          </div>
         ) : (
-          <ul className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             {board.serving.map((t) => (
               <ServingCard
                 key={t.id}
@@ -215,22 +204,22 @@ export default function CounterConsole({
                 supabase={supabase}
               />
             ))}
-          </ul>
+          </div>
         )}
       </section>
 
       <section>
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
-          Next in line ({board.waiting.length})
-        </h2>
+        <div className="flex items-baseline justify-between mb-2">
+          <span className="section-label">Next in line ({board.waiting.length})</span>
+        </div>
         {board.waiting.length === 0 ? (
-          <p className="text-sm text-muted">Queue is empty.</p>
+          <p className="text-xs text-muted">Queue is empty.</p>
         ) : (
-          <ol className="flex flex-col gap-1 text-sm">
+          <div className="card p-0">
             {board.waiting.map((t, i) => (
-              <li
+              <div
                 key={t.id}
-                className="flex justify-between rounded-md border border-line px-3 py-2"
+                className={`flex justify-between px-3.5 py-2 text-xs ${i < board.waiting.length - 1 ? "border-b border-line-dim" : ""}`}
               >
                 <span>
                   <span className="font-semibold">{i + 1}. {t.ticketNumber}</span>{" "}
@@ -239,12 +228,12 @@ export default function CounterConsole({
                 <span className="text-muted">
                   {t.items.map((it) => it.name).join(", ")}
                 </span>
-              </li>
+              </div>
             ))}
-          </ol>
+          </div>
         )}
       </section>
-    </main>
+    </div>
   );
 }
 
@@ -269,45 +258,33 @@ function ServingCard({
 }) {
   const onHold = t.queueStatus === "ON_HOLD";
   return (
-    <li className="rounded-lg border border-line p-4 shadow-sm">
+    <div className="card p-3.5">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-lg font-bold">{t.ticketNumber}</p>
-          <p className="text-sm text-muted">
+          <p className="text-lg font-bold" style={{ letterSpacing: "-0.04em" }}>{t.ticketNumber}</p>
+          <p className="text-xs text-muted">
             {t.studentName ?? "—"}
             {t.studentId ? ` · ${t.studentId}` : ""}
           </p>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-xs text-muted">
             {t.items.map((it) => it.name + (it.quantity > 1 ? ` ×${it.quantity}` : "")).join(", ")}
           </p>
           {onHold && (
-            <p className="mt-1 text-xs font-medium text-amber-600">
+            <p className="mt-1 text-[11px] font-medium text-amber">
               ON HOLD{t.holdReason ? ` — ${t.holdReason}` : ""}
             </p>
           )}
           {t.recallCount > 0 && (
-            <p className="mt-1 text-xs text-muted">Recalls: {t.recallCount}</p>
+            <p className="mt-1 text-[11px] text-muted">Recalls: {t.recallCount}</p>
           )}
         </div>
       </div>
 
       {canWrite && (
-        <div className="mt-3 flex flex-wrap gap-2 border-t border-line pt-3">
-          <button
-            onClick={() => void run(() => recall(supabase, t.id), `${t.ticketNumber} recalled`)}
-            disabled={busy}
-            className="rounded-md border border-line px-3 py-1.5 text-sm font-medium disabled:opacity-50"
-          >
-            Recall
-          </button>
+        <div className="mt-3 flex flex-wrap gap-1.5 border-t border-line-dim pt-3">
+          <button onClick={() => void run(() => recall(supabase, t.id), `${t.ticketNumber} recalled`)} disabled={busy} className="btn btn-ghost text-[11px]">Recall</button>
           {onHold ? (
-            <button
-              onClick={() => void run(() => resume(supabase, t.id), `${t.ticketNumber} resumed`)}
-              disabled={busy}
-              className="rounded-md border border-line px-3 py-1.5 text-sm font-medium disabled:opacity-50"
-            >
-              Resume
-            </button>
+            <button onClick={() => void run(() => resume(supabase, t.id), `${t.ticketNumber} resumed`)} disabled={busy} className="btn btn-ghost text-[11px]">Resume</button>
           ) : (
             <button
               onClick={() => {
@@ -315,26 +292,19 @@ function ServingCard({
                 void run(() => hold(supabase, t.id, reason), `${t.ticketNumber} on hold`);
               }}
               disabled={busy}
-              className="rounded-md border border-line px-3 py-1.5 text-sm font-medium disabled:opacity-50"
+              className="btn btn-ghost text-[11px]"
             >
               Hold
             </button>
           )}
-          <button
-            onClick={() => void run(() => complete(supabase, t.id), `${t.ticketNumber} completed`)}
-            disabled={busy}
-            className="rounded-md bg-blue px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
-          >
-            Complete
-          </button>
-
+          <button onClick={() => void run(() => complete(supabase, t.id), `${t.ticketNumber} completed`)} disabled={busy} className="btn btn-accent text-[11px]">Complete</button>
           {canFull && (
             <>
               <button
                 onClick={() => void run(() => noShow(supabase, t.id), `${t.ticketNumber} marked no-show`)}
                 disabled={busy || t.recallCount < 3}
                 title={t.recallCount < 3 ? "Requires 3 recalls" : undefined}
-                className="rounded-md border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 disabled:opacity-40"
+                className="btn btn-danger text-[11px]"
               >
                 No-Show
               </button>
@@ -342,30 +312,23 @@ function ServingCard({
                 defaultValue=""
                 onChange={(e) => {
                   const target = Number(e.target.value);
-                  if (target) {
-                    void run(
-                      () => transfer(supabase, t.id, target),
-                      `${t.ticketNumber} transferred`,
-                    );
-                  }
+                  if (target) void run(() => transfer(supabase, t.id, target), `${t.ticketNumber} transferred`);
                   e.target.value = "";
                 }}
                 disabled={busy}
-                className="rounded-md border border-line px-2 py-1.5 text-sm"
+                className="field py-1 text-[11px]"
               >
                 <option value="">Transfer to…</option>
                 {counters
                   .filter((c) => c.id !== currentCounterId)
                   .map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.label}
-                    </option>
+                    <option key={c.id} value={c.id}>{c.label}</option>
                   ))}
               </select>
             </>
           )}
         </div>
       )}
-    </li>
+    </div>
   );
 }

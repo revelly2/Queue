@@ -14,7 +14,6 @@ export default function Tracker({
   const [supabase] = useState(() => createClient());
   const [snap, setSnap] = useState(initial);
 
-  // Poll every 5s (anon can't subscribe to the RLS-protected tickets table).
   useEffect(() => {
     const id = setInterval(async () => {
       try {
@@ -30,58 +29,60 @@ export default function Tracker({
 
   return (
     <main className="mx-auto min-h-screen max-w-sm px-4 py-10">
-      <h1 className="text-center text-sm font-medium uppercase tracking-wide text-muted">
-        QueUA — Queue Tracker
-      </h1>
-      <p className="mt-2 text-center text-4xl font-extrabold">{ticketNumber}</p>
+      <div className="text-center mb-6">
+        <div className="flex items-center justify-center gap-2 mb-3">
+          <span className="grid h-6 w-6 place-items-center rounded-[5px] bg-accent text-[9px] font-extrabold text-white">Q</span>
+          <span className="text-xs font-semibold text-muted uppercase tracking-wider">Queue Tracker</span>
+        </div>
+        <p className="data-value text-4xl">{ticketNumber}</p>
+      </div>
 
       {!snap.found ? (
-        <p className="mt-8 rounded-lg bg-paper-dim px-4 py-6 text-center text-muted">
-          This ticket is not currently in the queue. It may have been completed,
-          transferred, or marked no-show.
-        </p>
+        <div className="card py-6 text-center text-xs text-muted">
+          This ticket is not currently in the queue. It may have been completed, transferred, or marked no-show.
+        </div>
       ) : me?.queueStatus === "SERVING" ? (
-        <p className="mt-8 rounded-lg bg-green-50 px-4 py-6 text-center text-lg font-semibold text-green-700">
-          It&apos;s your turn — please proceed
-          {me.counterId ? ` to Window ${me.counterId}` : ""}.
-        </p>
+        <div className="rounded-xl bg-green-light px-4 py-6 text-center">
+          <p className="text-base font-semibold text-green">
+            It&apos;s your turn — please proceed
+            {me.counterId ? ` to Window ${me.counterId}` : ""}.
+          </p>
+        </div>
       ) : me?.queueStatus === "ON_HOLD" ? (
-        <p className="mt-8 rounded-lg bg-amber-50 px-4 py-6 text-center font-semibold text-amber-700">
-          Your ticket is on hold. Please wait or check with staff.
-        </p>
+        <div className="rounded-xl bg-amber-light px-4 py-6 text-center">
+          <p className="text-sm font-semibold text-amber">
+            Your ticket is on hold. Please wait or check with staff.
+          </p>
+        </div>
       ) : (
-        <div className="mt-8 rounded-lg bg-paper-dim px-4 py-6 text-center">
-          <p className="text-5xl font-extrabold text-blue">{snap.ahead}</p>
-          <p className="mt-1 text-blue">ahead of you in line</p>
+        <div className="card py-6 text-center">
+          <p className="data-value text-5xl text-accent">{snap.ahead}</p>
+          <p className="mt-1 text-xs text-accent font-medium">ahead of you in line</p>
           {snap.ahead <= 3 && (
-            <p className="mt-3 text-sm font-semibold text-blue">
+            <p className="mt-3 text-xs font-semibold text-accent">
               You&apos;re almost up — stay close!
             </p>
           )}
         </div>
       )}
 
-      <section className="mt-8">
-        <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-          Now serving
-        </h2>
+      <section className="mt-6">
+        <div className="section-label mb-2">Now serving</div>
         {snap.serving.length === 0 ? (
-          <p className="text-sm text-muted">No tickets being served.</p>
+          <p className="text-xs text-muted">No tickets being served.</p>
         ) : (
-          <ul className="flex flex-col gap-1 text-sm">
-            {snap.serving.map((t) => (
-              <li key={t.ticketNumber} className="flex justify-between rounded-md border border-line px-3 py-2">
+          <div className="card p-0">
+            {snap.serving.map((t, i) => (
+              <div key={t.ticketNumber} className={`flex justify-between px-3.5 py-2 text-xs ${i < snap.serving.length - 1 ? "border-b border-line-dim" : ""}`}>
                 <span className="font-semibold">{t.ticketNumber}</span>
-                <span className="text-muted">
-                  {t.counterId ? `Window ${t.counterId}` : ""}
-                </span>
-              </li>
+                <span className="text-muted">{t.counterId ? `Window ${t.counterId}` : ""}</span>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </section>
 
-      <p className="mt-6 text-center text-xs text-muted">Updates automatically</p>
+      <p className="mt-5 text-center text-[10px] text-faint">Updates automatically</p>
     </main>
   );
 }

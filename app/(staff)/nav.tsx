@@ -10,12 +10,18 @@ interface NavLink {
   href: string;
   label: string;
   roles: AppRole[];
+  section?: string;
 }
 
 const LINKS: NavLink[] = [
-  { href: "/cashier", label: "Cashier", roles: ["CASHIER", "REGISTRAR_ADMIN", "SYSTEM_ADMIN"] },
-  { href: "/counter", label: "Counter Console", roles: ["COUNTER", "REGISTRAR_OFFICER", "REGISTRAR_ADMIN", "SYSTEM_ADMIN"] },
-  { href: "/admin", label: "Admin", roles: ["REGISTRAR_ADMIN", "SYSTEM_ADMIN"] },
+  { href: "/admin/monitoring", label: "Monitoring", roles: ["REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Analyze" },
+  { href: "/admin/reports", label: "Reports", roles: ["REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Analyze" },
+  { href: "/counter", label: "Counter Console", roles: ["COUNTER", "REGISTRAR_OFFICER", "REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Operate" },
+  { href: "/cashier", label: "Cashier", roles: ["CASHIER", "REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Operate" },
+  { href: "/admin/counters", label: "Counters", roles: ["REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Configure" },
+  { href: "/admin/modules", label: "Modules", roles: ["REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Configure" },
+  { href: "/admin/users", label: "Users & Roles", roles: ["REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Configure" },
+  { href: "/admin/announcements", label: "Announcements", roles: ["REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Configure" },
 ];
 
 export default function StaffNav({
@@ -30,6 +36,7 @@ export default function StaffNav({
   const [supabase] = useState(() => createClient());
 
   const links = LINKS.filter((l) => l.roles.includes(role));
+  const sections = [...new Set(links.map((l) => l.section))];
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -38,33 +45,45 @@ export default function StaffNav({
   }
 
   return (
-    <aside className="flex w-56 shrink-0 flex-col justify-between border-r border-line bg-paper-dim p-4">
+    <aside className="flex w-60 shrink-0 flex-col justify-between border-r border-line bg-surface" style={{ padding: "20px 12px 14px" }}>
       <div>
-        <Link href="/" className="display text-2xl">
+        <Link href="/" className="flex items-center gap-2.5 px-2 pb-2.5" style={{ fontWeight: 750, letterSpacing: "-0.04em", fontSize: "16px" }}>
+          <span className="grid h-[26px] w-[26px] place-items-center rounded-[7px] bg-accent text-[12px] font-extrabold text-white">Q</span>
           QueUA
         </Link>
-        <nav className="mt-8 flex flex-col gap-0.5">
-          {links.map((l) => {
-            const active = pathname === l.href || pathname.startsWith(l.href + "/");
-            return (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={`rounded-[3px] px-3 py-2 text-sm font-medium transition ${
-                  active ? "bg-ink text-paper" : "text-ink hover:bg-paper"
-                }`}
-              >
-                {l.label}
-              </Link>
-            );
-          })}
+
+        <div className="mx-1 mb-4 rounded-lg bg-bg px-2.5 py-2 text-xs text-muted">
+          {label} ▾
+        </div>
+
+        <nav className="flex flex-col">
+          {sections.map((section) => (
+            <div key={section} className="mb-3.5">
+              <div className="section-label px-2 py-1.5">{section}</div>
+              {links
+                .filter((l) => l.section === section)
+                .map((l) => {
+                  const active = pathname === l.href || pathname.startsWith(l.href + "/");
+                  return (
+                    <Link
+                      key={l.href}
+                      href={l.href}
+                      className={`nav-item ${active ? "active" : ""}`}
+                    >
+                      <span className="nav-dot" />
+                      {l.label}
+                    </Link>
+                  );
+                })}
+            </div>
+          ))}
         </nav>
       </div>
 
-      <div>
-        <p className="truncate text-sm font-medium text-ink">{label}</p>
-        <p className="eyebrow mt-0.5">{role.replace(/_/g, " ")}</p>
-        <button onClick={signOut} className="btn btn-ghost mt-3 w-full">
+      <div className="rounded-[10px] bg-bg p-2.5 text-xs text-ink-soft">
+        <div className="font-bold">{label}</div>
+        <div className="mt-0.5 text-muted">{role.replace(/_/g, " ")}</div>
+        <button onClick={signOut} className="btn btn-ghost mt-2 w-full text-xs">
           Sign out
         </button>
       </div>

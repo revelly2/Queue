@@ -35,19 +35,14 @@ export default function AnnouncementsAdmin({ initial }: { initial: Announcement[
   );
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-6">
-      <h1 className="mb-1 text-2xl font-bold">Announcements</h1>
-      <p className="mb-4 text-sm text-muted">
-        Messages shown in the lobby display ticker. Only active ones appear.
-      </p>
+    <div className="mx-auto max-w-4xl">
+      <div className="mb-4">
+        <h1 className="text-xl font-bold">Announcements</h1>
+        <p className="mt-0.5 text-xs text-muted">Messages shown in the lobby display ticker.</p>
+      </div>
 
       {notice && (
-        <p
-          role="status"
-          className={`mb-4 rounded-md px-3 py-2 text-sm ${
-            notice.ok ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-          }`}
-        >
+        <p role="status" className={`mb-3 rounded-lg px-3 py-2 text-xs ${notice.ok ? "bg-green-light text-green" : "bg-red-light text-red"}`}>
           {notice.text}
         </p>
       )}
@@ -62,29 +57,23 @@ export default function AnnouncementsAdmin({ initial }: { initial: Announcement[
             setNewMessage(""),
           );
         }}
-        className="mb-6 flex gap-2 rounded-lg border border-line p-4"
+        className="mb-4 flex gap-2"
       >
         <input
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="New announcement message"
-          className="flex-1 rounded-md border border-line px-3 py-2 text-sm"
+          className="field flex-1"
         />
-        <button
-          type="submit"
-          disabled={busy}
-          className="rounded-md bg-blue px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
-        >
-          Add
-        </button>
+        <button type="submit" disabled={busy} className="btn btn-accent">Add</button>
       </form>
 
       {items.length === 0 ? (
-        <p className="text-sm text-muted">No announcements yet.</p>
+        <p className="text-xs text-muted py-8 text-center">No announcements yet.</p>
       ) : (
-        <ul className="flex flex-col gap-2">
-          {items.map((a) => (
-            <li key={a.id} className="flex flex-wrap items-center gap-2 rounded-lg border border-line p-3">
+        <div className="card p-0">
+          {items.map((a, i) => (
+            <div key={a.id} className={`flex flex-wrap items-center gap-2 px-3.5 py-2.5 ${i < items.length - 1 ? "border-b border-line-dim" : ""}`}>
               <input
                 type="number"
                 defaultValue={a.sortOrder}
@@ -92,7 +81,7 @@ export default function AnnouncementsAdmin({ initial }: { initial: Announcement[
                   const n = Number(e.target.value);
                   if (n !== a.sortOrder) void run(() => updateAnnouncement(supabase, a.id, { sortOrder: n }), "Order updated");
                 }}
-                className="w-14 rounded-md border border-line px-2 py-1.5 text-sm"
+                className="field w-12 py-1 text-center text-xs"
                 title="Sort order"
               />
               <input
@@ -101,11 +90,9 @@ export default function AnnouncementsAdmin({ initial }: { initial: Announcement[
                   const v = e.target.value.trim();
                   if (v && v !== a.message) void run(() => updateAnnouncement(supabase, a.id, { message: v }), "Message updated");
                 }}
-                className={`min-w-0 flex-1 rounded-md border border-line px-2 py-1.5 text-sm ${
-                  a.isActive ? "" : "text-muted line-through"
-                }`}
+                className={`field min-w-0 flex-1 text-xs ${a.isActive ? "" : "text-muted line-through"}`}
               />
-              <label className="flex items-center gap-1 text-xs text-muted">
+              <label className="flex items-center gap-1 text-[11px] text-muted">
                 <input
                   type="checkbox"
                   defaultChecked={a.isActive}
@@ -121,14 +108,14 @@ export default function AnnouncementsAdmin({ initial }: { initial: Announcement[
                   }
                 }}
                 disabled={busy}
-                className="rounded-md border border-red-300 px-2 py-1.5 text-sm text-red-600 disabled:opacity-50"
+                className="btn btn-danger text-[11px]"
               >
                 Delete
               </button>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
-    </main>
+    </div>
   );
 }

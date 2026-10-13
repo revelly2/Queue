@@ -4,11 +4,11 @@ import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { getReport, reportToCsv, type ReportData } from "@/lib/admin/reports";
 
-function Tile({ label, value }: { label: string; value: string | number }) {
+function MetricCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-lg border border-line p-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-muted">{label}</p>
-      <p className="mt-1 text-2xl font-bold">{value}</p>
+    <div className="metric-card">
+      <div className="metric-label">{label}</div>
+      <div className="metric-value">{value}</div>
     </div>
   );
 }
@@ -59,61 +59,61 @@ export default function Reports({
   const peak = report.byHour.reduce((best, h) => (h.count > best.count ? h : best), { hour: 0, count: 0 });
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-6">
-      <h1 className="mb-1 text-2xl font-bold">Reports</h1>
-      <p className="mb-4 text-sm text-muted">Transaction volumes and service metrics.</p>
+    <div className="mx-auto max-w-4xl">
+      <div className="mb-4 flex items-end justify-between">
+        <div>
+          <h1 className="text-xl font-bold">Reports</h1>
+          <p className="mt-0.5 text-xs text-muted">Transaction volumes and service metrics</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="pill border border-line bg-surface text-ink text-xs">{range.from} — {range.to}</span>
+          <button onClick={exportCsv} className="btn btn-ghost">Export</button>
+        </div>
+      </div>
 
-      <div className="mb-5 flex flex-wrap items-end gap-2">
-        <label className="flex flex-col gap-1 text-xs font-medium">
-          From
-          <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="rounded-md border border-line px-2 py-1.5 text-sm" />
+      <div className="mb-4 flex flex-wrap items-end gap-2">
+        <label className="flex flex-col gap-1">
+          <span className="section-label">From</span>
+          <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="field text-xs" />
         </label>
-        <label className="flex flex-col gap-1 text-xs font-medium">
-          To
-          <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="rounded-md border border-line px-2 py-1.5 text-sm" />
+        <label className="flex flex-col gap-1">
+          <span className="section-label">To</span>
+          <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="field text-xs" />
         </label>
-        <button onClick={() => void run()} disabled={busy} className="rounded-md bg-blue px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">
+        <button onClick={() => void run()} disabled={busy} className="btn btn-accent">
           {busy ? "Running…" : "Run"}
-        </button>
-        <button onClick={exportCsv} className="rounded-md border border-line px-3 py-2 text-sm font-semibold">
-          Export CSV
         </button>
       </div>
 
-      {error && <p className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+      {error && <p className="mb-3 rounded-lg bg-red-light px-3 py-2 text-xs text-red">{error}</p>}
 
-      <section className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <Tile label="Total tickets" value={report.total} />
-        <Tile label="Completed" value={report.completed} />
-        <Tile label="No-show rate" value={`${(report.noShowRate * 100).toFixed(1)}%`} />
-        <Tile label="Avg wait (AQWT)" value={report.aqwtMins === null ? "—" : `${report.aqwtMins}m`} />
-        <Tile label="Avg handling (ASHT)" value={report.ashtMins === null ? "—" : `${report.ashtMins}m`} />
-        <Tile label="Peak hour" value={peak.count > 0 ? `${peak.hour}:00 (${peak.count})` : "—"} />
+      <section className="mb-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+        <MetricCard label="Total tickets" value={report.total} />
+        <MetricCard label="Completed" value={report.completed} />
+        <MetricCard label="No-show rate" value={`${(report.noShowRate * 100).toFixed(1)}%`} />
+        <MetricCard label="Avg wait" value={report.aqwtMins === null ? "—" : `${report.aqwtMins}m`} />
+        <MetricCard label="Avg handling" value={report.ashtMins === null ? "—" : `${report.ashtMins}m`} />
+        <MetricCard label="Peak hour" value={peak.count > 0 ? `${peak.hour}:00` : "—"} />
       </section>
 
-      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
-        Transactions by service
-      </h2>
-      {report.byService.length === 0 ? (
-        <p className="text-sm text-muted">No transactions in this range.</p>
-      ) : (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-line text-left text-muted">
-              <th className="py-2">Service</th>
-              <th className="py-2 text-right">Count</th>
-            </tr>
-          </thead>
-          <tbody>
+      <section className="card p-3.5">
+        <div className="flex items-baseline justify-between mb-2">
+          <span className="text-sm font-semibold">By service</span>
+          <span className="text-xs text-muted">{report.byService.length} services</span>
+        </div>
+        {report.byService.length === 0 ? (
+          <p className="py-6 text-center text-xs text-muted">No transactions in this range.</p>
+        ) : (
+          <div className="text-xs">
             {report.byService.map((s) => (
-              <tr key={s.code} className="border-b border-line">
-                <td className="py-1.5">{s.name}</td>
-                <td className="py-1.5 text-right font-semibold tabular-nums">{s.count}</td>
-              </tr>
+              <div key={s.code} className="grid grid-cols-[1fr_48px] gap-2 items-center border-b border-line-dim py-1.5">
+                <span>{s.name}</span>
+                <span className="text-right font-semibold tabular-nums">{s.count}</span>
+              </div>
             ))}
-          </tbody>
-        </table>
-      )}
-    </main>
+          </div>
+        )}
+      </section>
+    </div>
   );
 }

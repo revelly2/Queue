@@ -22,7 +22,6 @@ export default function LoginPage() {
       setError(error.message);
       return;
     }
-    // Route to the landing that fits the signed-in role.
     let dest = "/counter";
     const uid = data.user?.id;
     if (uid) {
@@ -37,15 +36,18 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-8 px-6">
+    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-6 px-6">
       <div>
-        <p className="eyebrow">QueUA · Staff</p>
-        <h1 className="kinetic mt-2 text-5xl">Sign in</h1>
-        <p className="mt-2 text-sm text-muted">Cashier, registrar &amp; admin portal</p>
+        <div className="flex items-center gap-2.5 mb-4">
+          <span className="grid h-[26px] w-[26px] place-items-center rounded-[7px] bg-accent text-[12px] font-extrabold text-white">Q</span>
+          <span className="font-bold" style={{ letterSpacing: "-0.04em" }}>QueUA</span>
+        </div>
+        <h1 className="text-xl font-bold" style={{ letterSpacing: "-0.04em" }}>Sign in</h1>
+        <p className="mt-1 text-xs text-muted">Staff portal — cashier, registrar & admin</p>
       </div>
-      <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <label className="flex flex-col gap-1.5 text-sm font-medium">
-          <span className="eyebrow">Email</span>
+      <form onSubmit={onSubmit} className="flex flex-col gap-3">
+        <label className="flex flex-col gap-1.5">
+          <span className="section-label">Email</span>
           <input
             type="email"
             required
@@ -55,8 +57,8 @@ export default function LoginPage() {
             autoComplete="username"
           />
         </label>
-        <label className="flex flex-col gap-1.5 text-sm font-medium">
-          <span className="eyebrow">Password</span>
+        <label className="flex flex-col gap-1.5">
+          <span className="section-label">Password</span>
           <input
             type="password"
             required
@@ -67,11 +69,9 @@ export default function LoginPage() {
           />
         </label>
         {error && (
-          <p role="alert" className="text-sm text-[#b42318]">
-            {error}
-          </p>
+          <p role="alert" className="text-xs text-red">{error}</p>
         )}
-        <button type="submit" disabled={loading} className="btn btn-primary mt-1">
+        <button type="submit" disabled={loading} className="btn btn-primary mt-1 py-2.5 text-sm">
           {loading ? "Signing in…" : "Sign in"}
         </button>
       </form>

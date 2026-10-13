@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-13T00:00:00Z",
+  "title": "Design System: QueUA — The Registrar's Vellum",
+  "extensions": {
+    "colorMeta": {
+      "vellum": { "role": "neutral", "displayName": "Vellum", "canonical": "#f4f3ee", "tonalRamp": ["#2b2a26", "#41403a", "#5c5a51", "#807d72", "#a6a398", "#c9c6ba", "#e4e2d9", "#f4f3ee"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#151513", "tonalRamp": ["#151513", "#2a2a26", "#403f3b", "#5c5b55", "#817f77", "#a8a69c", "#ceccc2", "#ecebe4"] },
+      "graphite": { "role": "neutral", "displayName": "Graphite", "canonical": "#6d6d66", "tonalRamp": ["#1f1f1c", "#33332f", "#4a4a44", "#6d6d66", "#8c8c84", "#acaca3", "#ccccc3", "#ececea"] },
+      "chalk-line": { "role": "neutral", "displayName": "Chalk Line", "canonical": "#d7d6cf", "tonalRamp": ["#3a3a34", "#545149", "#726f64", "#949184", "#b4b1a5", "#cfcdc3", "#e3e1da", "#f1f0ea"] },
+      "electric-blue": { "role": "primary", "displayName": "Electric Blue", "canonical": "#3458f4", "tonalRamp": ["#0a1240", "#132166", "#1d3399", "#2745cc", "#3458f4", "#5e7bf6", "#93a8f9", "#c9d4fc"] },
+      "acid-lime": { "role": "primary", "displayName": "Acid-Lime", "canonical": "#d6ff3f", "tonalRamp": ["#2e3a00", "#45560a", "#637d12", "#86a61c", "#a9cc2a", "#c2e835", "#d6ff3f", "#ebff9e"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Instrument Serif. Page/hero titles and the lobby 'Now Serving.' only — never a second sans headline." },
+      "headline": { "displayName": "Headline", "purpose": "Geist 700. Console and board page headings." },
+      "title": { "displayName": "Title", "purpose": "Geist 600. Card titles, ticket numbers in lists, row headers." },
+      "body": { "displayName": "Body", "purpose": "Geist 400. Default running text and controls." },
+      "label": { "displayName": "Label / Eyebrow", "purpose": "Geist Mono, uppercase, 0.18em tracking. Eyebrows, chips; tabular-nums for all figures and ticket numbers." }
+    },
+    "shadows": [
+      { "name": "field-focus-ring", "value": "0 0 0 3px color-mix(in srgb, #3458f4 18%, transparent)", "purpose": "The only shadow in the system — focused input fields, paired with a solid Electric Blue border. The system is otherwise flat." }
+    ],
+    "motion": [
+      { "name": "kinetic-ease", "value": "cubic-bezier(0.2, 0.7, 0.2, 1)", "purpose": "Easing for the 0.6s kinetic-rise reveal on display headings (translateY + fade + tracking settle). Disabled under prefers-reduced-motion." },
+      { "name": "marquee", "value": "linear infinite", "purpose": "Lobby ticker scroll (~32s). Disabled under prefers-reduced-motion." },
+      { "name": "focus-outline", "value": "2px solid #3458f4 (offset 2px)", "purpose": "Keyboard :focus-visible outline everywhere except fields." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The quiet authoritative default action — ink fill on vellum.",
+      "html": "<button class=\"ds-btn-primary\">Sign in</button>",
+      "css": ".ds-btn-primary { display:inline-flex; align-items:center; justify-content:center; gap:.4rem; background:#151513; color:#f4f3ee; border:1px solid transparent; border-radius:3px; padding:.55rem 1rem; font-family:Geist, ui-sans-serif, system-ui, sans-serif; font-size:.875rem; font-weight:500; line-height:1; transition:background-color .15s ease, transform .05s ease; } .ds-btn-primary:hover { background:#2a2a26; } .ds-btn-primary:active { transform:translateY(1px); } .ds-btn-primary:focus-visible { outline:2px solid #3458f4; outline-offset:2px; }"
+    },
+    {
+      "name": "Accent Button",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "The loud call to action — Call Next, Confirm.",
+      "html": "<button class=\"ds-btn-accent\">Call Next</button>",
+      "css": ".ds-btn-accent { display:inline-flex; align-items:center; justify-content:center; background:#3458f4; color:#fff; border:none; border-radius:3px; padding:.55rem 1rem; font-family:Geist, ui-sans-serif, system-ui, sans-serif; font-size:.875rem; font-weight:600; line-height:1; transition:filter .15s ease, transform .05s ease; } .ds-btn-accent:hover { filter:brightness(1.08); } .ds-btn-accent:active { transform:translateY(1px); }"
+    },
+    {
+      "name": "Acid Button",
+      "kind": "button",
+      "refersTo": "button-acid",
+      "description": "The signature accent button (e.g. Enable announcements on the dark board).",
+      "html": "<button class=\"ds-btn-acid\">🔊 Enable announcements</button>",
+      "css": ".ds-btn-acid { display:inline-flex; align-items:center; gap:.4rem; background:#d6ff3f; color:#151513; border:none; border-radius:3px; padding:.55rem 1rem; font-family:Geist, ui-sans-serif, system-ui, sans-serif; font-size:.875rem; font-weight:600; line-height:1; } .ds-btn-acid:active { transform:translateY(1px); }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action — hairline border, fills vellum-dim on hover.",
+      "html": "<button class=\"ds-btn-ghost\">Sign out</button>",
+      "css": ".ds-btn-ghost { display:inline-flex; align-items:center; justify-content:center; background:transparent; color:#151513; border:1px solid #d7d6cf; border-radius:3px; padding:.55rem 1rem; font-family:Geist, ui-sans-serif, system-ui, sans-serif; font-size:.875rem; font-weight:500; line-height:1; transition:background-color .15s ease; } .ds-btn-ghost:hover { background:#eceae2; }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "White cut-out in the paper with a hairline stroke; blue glow on focus.",
+      "html": "<label class=\"ds-field-label\">Email</label><input class=\"ds-field\" type=\"email\" placeholder=\"you@abra.edu\" />",
+      "css": ".ds-field-label { display:block; font-family:'Geist Mono', ui-monospace, monospace; font-size:.6875rem; text-transform:uppercase; letter-spacing:.18em; color:#6d6d66; margin-bottom:.4rem; } .ds-field { width:100%; background:#fff; color:#151513; border:1px solid #d7d6cf; border-radius:3px; padding:.55rem .75rem; font-family:Geist, ui-sans-serif, system-ui, sans-serif; font-size:.95rem; } .ds-field:focus { outline:none; border-color:#3458f4; box-shadow:0 0 0 3px color-mix(in srgb, #3458f4 18%, transparent); }"
+    },
+    {
+      "name": "Status Pill",
+      "kind": "chip",
+      "refersTo": "pill",
+      "description": "Full-round mono chip; tinted only to carry state meaning. Shown: OPEN.",
+      "html": "<span class=\"ds-pill ds-pill-open\">OPEN</span>",
+      "css": ".ds-pill { display:inline-flex; align-items:center; border-radius:999px; padding:.1rem .6rem; font-family:'Geist Mono', ui-monospace, monospace; font-size:.6875rem; font-weight:500; text-transform:uppercase; letter-spacing:.08em; } .ds-pill-open { background:#dcfce7; color:#15803d; }"
+    },
+    {
+      "name": "Eyebrow + Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Flat vellum surface, one hairline border, mono eyebrow over a serif/mono value.",
+      "html": "<div class=\"ds-card\"><p class=\"ds-eyebrow\">Now Serving</p><p class=\"ds-ticket\">DOC-0005</p></div>",
+      "css": ".ds-card { background:#f8f7f4; border:1px solid #d7d6cf; border-radius:3px; padding:16px; } .ds-eyebrow { font-family:'Geist Mono', ui-monospace, monospace; font-size:.6875rem; text-transform:uppercase; letter-spacing:.18em; color:#6d6d66; margin:0 0 .5rem; } .ds-ticket { font-family:'Geist Mono', ui-monospace, monospace; font-variant-numeric:tabular-nums; font-size:2rem; font-weight:600; color:#151513; margin:0; }"
+    },
+    {
+      "name": "Lobby Serving Card",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "The inverted signature surface: ink ground, acid-lime border and number for distance reading.",
+      "html": "<div class=\"ds-lobby-card\"><p class=\"ds-lobby-eyebrow\">Window 1</p><p class=\"ds-lobby-label\">OTR &amp; Diplomas</p><p class=\"ds-lobby-number\">DOC-0005</p></div>",
+      "css": ".ds-lobby-card { background:rgba(214,255,63,0.06); border:1px solid #d6ff3f; border-radius:3px; padding:24px; } .ds-lobby-eyebrow { font-family:'Geist Mono', ui-monospace, monospace; font-size:.6875rem; text-transform:uppercase; letter-spacing:.18em; color:rgba(244,243,238,.55); margin:0; } .ds-lobby-label { color:rgba(244,243,238,.8); font-family:Geist, ui-sans-serif, system-ui, sans-serif; font-size:1.125rem; margin:.25rem 0 0; } .ds-lobby-number { font-family:'Geist Mono', ui-monospace, monospace; font-variant-numeric:tabular-nums; font-size:3.5rem; font-weight:600; color:#d6ff3f; margin:1rem 0 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Registrar's Vellum",
+    "overview": "QueUA looks like the records office of a university rendered as a calm editorial object: a warm sheet of vellum, near-black ink, hairline rules, and a kinetic serif headline that reads like the title of a document. It is an Operate system, so the interface recedes and the work leads. Against that quiet ground, color is used generously and purposefully: electric blue carries interaction and wayfinding, acid-lime is the system's signature spark. The public lobby display inverts the whole world — ink ground, paper text, acid highlights — so it reads across a room. The anti-reference is the default SaaS dashboard: cool gray-on-white, drop-shadowed cards, rounded-everything, blue-600 buttons.",
+    "keyCharacteristics": [
+      "Warm vellum ground (#f4f3ee), never pure white as the page.",
+      "Instrument Serif for display; Geist for UI; Geist Mono for every label, eyebrow, and number.",
+      "Flat by default — structure is drawn with a single hairline rule, not elevation.",
+      "Near-square 3px corners; pills reserved for status only.",
+      "Generous, deliberate accents: electric blue for action, acid-lime as signature."
+    ],
+    "rules": [
+      { "name": "The Paper Ground Rule", "body": "Every page sits on Vellum (#f4f3ee), never on pure white. White is reserved exclusively for the interior of input fields, so a field reads as a cut-out in the paper.", "section": "colors" },
+      { "name": "The Generous Accent Rule", "body": "Accents are used liberally for affordance and wayfinding, not rationed — electric blue marks anything actionable, acid-lime carries signature and emphasis. What keeps the system calm is the neutral ground doing the heavy lifting, not scarcity of color.", "section": "colors" },
+      { "name": "The Status-Color Exception", "body": "Beyond the brand accents, amber/red/green are permitted only to carry meaning in state (on-hold, destructive, success). They never decorate.", "section": "colors" },
+      { "name": "The Serif Display Rule", "body": "Only Instrument Serif carries display type. Geist never plays the hero; a second sans headline is a failure of the system.", "section": "typography" },
+      { "name": "The Mono Eyebrow Rule", "body": "Every eyebrow, field label, status chip, and above all every ticket number and metric is Geist Mono — uppercase for labels, tabular-nums for figures. Numbers are register entries, not body text.", "section": "typography" },
+      { "name": "The Hairline Rule", "body": "Structure is drawn with one 1px Chalk-Line (#d7d6cf) border. Surfaces are flat at rest; if you reach for a drop shadow to separate two things, use a rule or a tonal step instead.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do put every surface on the Vellum ground (#f4f3ee) and reserve pure white for input interiors only.",
+      "Do set page/hero titles in Instrument Serif and everything operational in Geist; set all labels, eyebrows, ticket numbers, and metrics in Geist Mono.",
+      "Do separate planes with a single 1px Chalk-Line (#d7d6cf) border or a tonal step to Vellum-Dim.",
+      "Do use Electric Blue for anything actionable and Acid-Lime as the signature accent, freely and purposefully.",
+      "Do keep corners near-square (3px); use the 999px pill only for status chips.",
+      "Do invert to the Ink ground + Acid-Lime world for the public lobby display, and respect prefers-reduced-motion on the kinetic headline and marquee."
+    ],
+    "donts": [
+      "Don't use drop shadows to float cards; this system is flat — reach for a rule or a tonal step.",
+      "Don't render a second sans-serif headline or let Geist play display; the serif owns that register.",
+      "Don't introduce cool grays or pure-white page backgrounds — that is the generic-SaaS anti-reference.",
+      "Don't let the semantic status colors (amber/red/green) decorate; they appear only to carry state meaning.",
+      "Don't round everything into pills; pills are for status only."
+    ]
+  }
+}
