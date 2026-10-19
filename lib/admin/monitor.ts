@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { connection } from "next/server";
 import type { CounterStatus } from "@/lib/db/enums";
 
 export interface MonitorCounter {
@@ -29,6 +30,9 @@ interface TicketRow {
 }
 
 export async function getMonitorSnapshot(sb: SupabaseClient): Promise<MonitorSnapshot> {
+  // Prerendering stops here so request-time calculations like Date.now() don't fail in Next 16
+  await connection();
+
   const [countersRes, ticketsRes] = await Promise.all([
     sb.from("counters").select("id,counter_number,label_name,status").order("counter_number"),
     sb

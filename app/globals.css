@@ -1,36 +1,67 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Nock · Activation — SaaS dashboard design system
-   Warm stone palette, Plus Jakarta Sans, dense data UI.
-   Adapted from the reference — not copied.
+   QueUA — University of Abra (Bangued Campus) Design System
+   Accurate color matching directly from the official University Seal:
+   - Royal Blue: #0038A8 (Outer Seal Ring & Bangued Campus Banner)
+   - Academic Emerald Green: #008837 (Center Core Diamond)
+   - Collegiate Crimson: #991B1B / #7F1D1D (Atom Ring & Varsity Accent - Not Bright Red)
+   - Clean Scholastic Ground: #F8FAFC & #FFFFFF
    ============================================================ */
 :root {
-  --bg: #f6f4f1;
+  --royal-dark: #002776;
+  --royal: #0038a8;
+  --royal-hover: #002d85;
+  --royal-light: #eef4ff;
+  --royal-border: #bfdbfe;
+
+  --emerald-dark: #00682a;
+  --emerald: #008837;
+  --emerald-hover: #007730;
+  --emerald-light: #ecfdf5;
+  --emerald-border: #a7f3d0;
+
+  --crimson: #991b1b;
+  --crimson-hover: #7f1d1d;
+  --crimson-light: #fef2f2;
+  --crimson-dim: #fee2e2;
+  --crimson-border: #fecaca;
+  --crimson-text: #991b1b;
+
+  --gold: var(--crimson);
+  --gold-hover: var(--crimson-hover);
+  --gold-light: var(--crimson-light);
+  --gold-dim: var(--crimson-dim);
+  --gold-text: var(--crimson-text);
+
+  --bg: #f8fafc;
   --surface: #ffffff;
-  --ink: #1c1917;
-  --ink-soft: #44403c;
-  --muted: #78716c;
-  --faint: #a8a29e;
-  --line: #e7e5e4;
-  --line-dim: #f0eee9;
-  --accent: #c2410c;
-  --accent-light: #fff7ed;
-  --accent-border: #fed7aa;
-  --accent-text: #9a3412;
-  --green: #15803d;
-  --green-light: #f0fdf4;
-  --red: #b42318;
-  --red-light: #fef2f2;
-  --amber: #b45309;
-  --amber-light: #fffbeb;
+  --surface-raised: #ffffff;
+  --ink: #0f172a;
+  --ink-soft: #334155;
+  --muted: #64748b;
+  --faint: #94a3b8;
+  --line: #e2e8f0;
+  --line-dim: #f1f5f9;
+
+  --accent: var(--crimson);
+  --accent-light: var(--crimson-light);
+  --accent-border: var(--crimson-border);
+  --accent-text: var(--crimson);
+
+  --green: var(--emerald);
+  --green-light: var(--emerald-light);
+  --red: var(--crimson);
+  --red-light: var(--crimson-light);
+  --amber: var(--crimson);
+  --amber-light: var(--crimson-light);
 
   --background: var(--bg);
   --foreground: var(--ink);
   --radius: 8px;
   --radius-sm: 4px;
-  --radius-lg: 12px;
-  --radius-pill: 99px;
+  --radius-lg: 14px;
+  --radius-pill: 9999px;
   color-scheme: light;
 }
 
@@ -45,16 +76,25 @@
   --color-faint: var(--faint);
   --color-line: var(--line);
   --color-line-dim: var(--line-dim);
+
+  --color-royal: var(--royal);
+  --color-royal-dark: var(--royal-dark);
+  --color-royal-light: var(--royal-light);
+
+  --color-emerald: var(--emerald);
+  --color-emerald-dark: var(--emerald-dark);
+  --color-emerald-light: var(--emerald-light);
+
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+
+  --color-crimson: var(--crimson);
+  --color-crimson-light: var(--crimson-light);
+
   --color-accent: var(--accent);
   --color-accent-light: var(--accent-light);
   --color-accent-border: var(--accent-border);
   --color-accent-text: var(--accent-text);
-  --color-green: var(--green);
-  --color-green-light: var(--green-light);
-  --color-red: var(--red);
-  --color-red-light: var(--red-light);
-  --color-amber: var(--amber);
-  --color-amber-light: var(--amber-light);
 
   --font-sans: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -72,16 +112,16 @@ body {
 
 h1, h2, h3 {
   font-weight: 700;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
 }
 
 ::selection {
-  background: var(--accent-light);
-  color: var(--accent);
+  background: var(--royal-light);
+  color: var(--royal-dark);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--royal);
   outline-offset: 2px;
 }
 
@@ -100,7 +140,7 @@ textarea {
 
 input,
 textarea {
-  caret-color: var(--accent);
+  caret-color: var(--royal);
 }
 
 * {
@@ -148,20 +188,20 @@ textarea {
 
 /* ---- Component vocabulary ---- */
 @layer components {
-  /* Section label — 10px uppercase tracking */
+  /* Section label */
   .section-label {
-    font-size: 10px;
+    font-size: 10.5px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--faint);
-    font-weight: 500;
+    color: var(--crimson);
+    font-weight: 700;
   }
 
-  /* Data display — tight tracking, heavy weight */
+  /* Data display */
   .data-value {
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 800;
-    letter-spacing: -0.05em;
+    letter-spacing: -0.04em;
     font-variant-numeric: tabular-nums;
   }
 
@@ -170,90 +210,116 @@ textarea {
     font-variant-numeric: tabular-nums;
   }
 
-  /* Cards — white surface, stone border, 12px radius */
+  /* Cards */
   .card {
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
-    padding: 12px 14px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Metric card — compact stat tile */
-  .metric-card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    padding: 12px 14px;
+  .card-hover:hover {
+    border-color: #93c5fd;
+    box-shadow: 0 6px 18px -4px rgba(0, 56, 168, 0.12);
+    transform: translateY(-1px);
   }
-  .metric-card .metric-label {
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .metric-card .metric-value {
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: -0.05em;
-    margin: 2px 0;
-    font-variant-numeric: tabular-nums;
-  }
-  .metric-card .metric-delta {
-    font-size: 11px;
-    font-weight: 650;
-  }
-  .metric-card .metric-delta.up { color: var(--green); }
-  .metric-card .metric-delta.down { color: var(--red); }
 
   /* Buttons */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.4rem;
+    gap: 0.5rem;
     border-radius: var(--radius);
-    padding: 6px 10px;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1;
+    padding: 10px 18px;
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.2;
     border: 1px solid transparent;
-    transition:
-      background-color 0.15s ease,
-      color 0.15s ease,
-      border-color 0.15s ease;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
+    text-decoration: none;
   }
   .btn:disabled {
     opacity: 0.45;
     pointer-events: none;
   }
   .btn-primary {
-    background: var(--ink);
-    color: #fff;
+    background: #991b1b !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 10px rgba(153, 27, 27, 0.28);
   }
   .btn-primary:hover {
-    background: var(--ink-soft);
+    background: #7f1d1d !important;
+    box-shadow: 0 4px 16px rgba(153, 27, 27, 0.38);
+    transform: translateY(-1px);
+  }
+  .btn-crimson {
+    background: #991b1b !important;
+    color: #ffffff !important;
+    box-shadow: 0 3px 12px rgba(153, 27, 27, 0.32);
+  }
+  .btn-crimson:hover {
+    background: #7f1d1d !important;
+    box-shadow: 0 5px 18px rgba(153, 27, 27, 0.42);
+    transform: translateY(-1px);
+  }
+  .btn-gold {
+    background: #991b1b !important;
+    color: #ffffff !important;
+    box-shadow: 0 3px 12px rgba(153, 27, 27, 0.32);
+  }
+  .btn-gold:hover {
+    background: #7f1d1d !important;
+    box-shadow: 0 5px 18px rgba(153, 27, 27, 0.42);
+    transform: translateY(-1px);
+  }
+  .btn-royal {
+    background: #0038a8 !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 10px rgba(0, 56, 168, 0.28);
+  }
+  .btn-royal:hover {
+    background: #002776 !important;
+    box-shadow: 0 4px 16px rgba(0, 56, 168, 0.38);
+    transform: translateY(-1px);
+  }
+  .btn-emerald {
+    background: #008837 !important;
+    color: #ffffff !important;
+    box-shadow: 0 3px 10px rgba(0, 136, 55, 0.3);
+  }
+  .btn-emerald:hover {
+    background: #00682a !important;
+    transform: translateY(-1px);
   }
   .btn-accent {
-    background: var(--accent);
-    color: #fff;
+    background: #991b1b !important;
+    color: #ffffff !important;
   }
   .btn-accent:hover {
-    filter: brightness(1.1);
+    background: #7f1d1d !important;
   }
   .btn-ghost {
-    background: transparent;
-    color: var(--ink);
-    border-color: var(--line);
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1.5px solid #cbd5e1 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   }
   .btn-ghost:hover {
-    background: var(--bg);
+    background: #f8fafc !important;
+    border-color: #0038a8 !important;
+    color: #0038a8 !important;
   }
   .btn-danger {
     background: transparent;
-    color: var(--red);
-    border-color: #e5bdb8;
+    color: var(--crimson);
+    border-color: #fca5a5;
   }
   .btn-danger:hover {
-    background: var(--red-light);
+    background: var(--crimson-light);
   }
 
   /* Input fields */
@@ -261,14 +327,15 @@ textarea {
     border-radius: var(--radius);
     border: 1px solid var(--line);
     background: #fff;
-    padding: 8px 12px;
+    padding: 9px 12px;
     font-size: 13px;
     color: var(--ink);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .field:focus {
     outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+    border-color: #0038a8;
+    box-shadow: 0 0 0 3px rgba(0, 56, 168, 0.14);
   }
 
   /* Status pill */
@@ -276,7 +343,7 @@ textarea {
     display: inline-flex;
     align-items: center;
     border-radius: var(--radius-pill);
-    padding: 2px 8px;
+    padding: 3px 9px;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.02em;
@@ -287,21 +354,22 @@ textarea {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 10px;
+    padding: 9px 12px;
     border-radius: var(--radius);
-    margin-bottom: 2px;
+    margin-bottom: 3px;
     font-size: 13px;
     font-weight: 500;
     color: var(--ink-soft);
     transition: background-color 0.12s ease, color 0.12s ease;
   }
   .nav-item:hover {
-    background: var(--bg);
+    background: var(--royal-light);
+    color: var(--royal-dark);
   }
   .nav-item.active {
-    background: var(--accent-light);
-    color: var(--accent);
-    font-weight: 650;
+    background: #0038a8;
+    color: #ffffff;
+    font-weight: 600;
   }
   .nav-item .nav-dot {
     width: 14px;
@@ -310,18 +378,17 @@ textarea {
     flex: 0 0 auto;
   }
   .nav-item.active .nav-dot {
-    background: var(--accent);
+    background: #991b1b;
   }
   .nav-item:not(.active) .nav-dot {
     background: var(--line);
   }
 
-  /* Eyebrow — backwards compat alias */
   .eyebrow {
     font-size: 10px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--faint);
-    font-weight: 500;
+    color: var(--crimson);
+    font-weight: 700;
   }
 }
