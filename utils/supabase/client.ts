@@ -1,8 +1,8 @@
 import { createBrowserClient } from "@supabase/ssr";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key";
 
 /** Browser-side Supabase client for Client Components. */
 export const createClient = () =>
-  createBrowserClient(supabaseUrl!, supabaseKey!);
+  createBrowserClient(supabaseUrl, supabaseKey);
