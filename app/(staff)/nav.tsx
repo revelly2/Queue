@@ -8,6 +8,7 @@ import type { AppRole } from "@/lib/db/enums";
 import { UniversitySeal } from "@/components/illustrations/UniversitySeal";
 import {
   ActivityIcon,
+  ClockIcon,
   BarChartIcon,
   BuildingIcon,
   CreditCardIcon,
@@ -28,6 +29,7 @@ interface NavLink {
 const LINKS: NavLink[] = [
   { href: "/admin/monitoring", label: "Live Monitoring", icon: ActivityIcon, roles: ["REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Analyze" },
   { href: "/admin/reports", label: "Shift Reports", icon: BarChartIcon, roles: ["REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Analyze" },
+  { href: "/admin/history", label: "Transaction History", icon: ClockIcon, roles: ["REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Analyze" },
   { href: "/counter", label: "Counter Console", icon: BuildingIcon, roles: ["COUNTER", "REGISTRAR_OFFICER", "REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Operate" },
   { href: "/cashier", label: "Cashier Clearance", icon: CreditCardIcon, roles: ["CASHIER", "REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Operate" },
   { href: "/admin/counters", label: "Service Windows", icon: MonitorIcon, roles: ["REGISTRAR_ADMIN", "SYSTEM_ADMIN"], section: "Configure" },

@@ -21,7 +21,7 @@ export default function CashierBoard({ initialPending, cashierLabel }: Props) {
   const [pending, setPending] = useState<PendingPaymentTicket[]>(initialPending);
   const [manualNumber, setManualNumber] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
-  const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
+  const [notice, setNotice] = useState<{ ok: boolean; text: string; ticketNumber?: string } | null>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -52,7 +52,7 @@ export default function CashierBoard({ initialPending, cashierLabel }: Props) {
       try {
         const result = await confirmPayment(supabase, num);
         setPending((prev) => prev.filter((t) => t.ticketNumber !== num));
-        setNotice({ ok: true, text: `${result.ticketNumber} marked PAID (${peso(result.totalAssessed)})` });
+        setNotice({ ok: true, text: `${result.ticketNumber} marked PAID (${peso(result.totalAssessed)})`, ticketNumber: result.ticketNumber });
         setManualNumber("");
       } catch (e) {
         setNotice({ ok: false, text: (e as Error).message });
@@ -87,6 +87,16 @@ export default function CashierBoard({ initialPending, cashierLabel }: Props) {
       {notice && (
         <p role="status" className={`mb-3 rounded-lg px-3 py-2 text-xs ${notice.ok ? "bg-green-light text-green" : "bg-red-light text-red"}`}>
           {notice.text}
+          {notice.ticketNumber && (
+            <a
+              href={`/receipt/${encodeURIComponent(notice.ticketNumber)}`}
+              target="_blank"
+              rel="noopener"
+              className="ml-2 font-semibold underline"
+            >
+              Print receipt
+            </a>
+          )}
         </p>
       )}
 
