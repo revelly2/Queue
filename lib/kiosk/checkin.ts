@@ -12,6 +12,7 @@ import type {
   QueueStatus,
   ServiceCategory,
 } from "@/lib/db/enums";
+import { isWithinBookingHours, BOOKING_SCHEDULE } from "./operatingHours";
 
 export interface CheckinItemInput {
   /** services.code, e.g. "DOC_OTR". */
@@ -81,12 +82,18 @@ function mapResult(raw: RawCheckinResult): CheckinResult {
 
 /**
  * Create a kiosk check-in ticket. Throws on validation/RPC failure (e.g.
- * unknown service code, mixed categories) — surface the message to the kiosk.
+ * unknown service code, mixed categories, or outside operating hours).
  */
 export async function createCheckin(
   supabase: SupabaseClient,
   input: CheckinInput,
 ): Promise<CheckinResult> {
+  if (!isWithinBookingHours()) {
+    throw new Error(
+      `Queue ticket booking is currently closed. Booking is only available from ${BOOKING_SCHEDULE.LABEL} (Philippine Standard Time).`,
+    );
+  }
+
   const { data, error } = await supabase.rpc("create_checkin", {
     p_student_id: input.studentId ?? null,
     p_student_name: input.studentName ?? null,

@@ -119,8 +119,8 @@ export default function Home() {
                 <p className="text-xl font-extrabold text-[#008837] mt-0.5">~4.2 min</p>
               </div>
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted">Availability</p>
-                <p className="text-xl font-extrabold text-ink-soft mt-0.5">Web 24/7</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted">Booking Hours</p>
+                <p className="text-lg sm:text-xl font-extrabold text-[#0038A8] mt-0.5">7:30a–5:00p</p>
               </div>
             </div>
           </div>
@@ -158,9 +158,12 @@ export default function Home() {
                   <StudentBookingIllustration size={130} />
                 </div>
                 <div>
-                  <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider bg-red-100 text-[#991B1B] mb-1">
-                    Phone Booking
-                  </span>
+                  <div className="flex items-center justify-between gap-1 mb-1">
+                    <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider bg-red-100 text-[#991B1B]">
+                      Phone Booking
+                    </span>
+                    <span className="text-[10px] font-bold text-muted">7:30 AM – 5:00 PM</span>
+                  </div>
                   <h3 className="text-base font-bold text-[#002776] group-hover:text-[#991B1B] transition">
                     Book Queue e-Ticket
                   </h3>

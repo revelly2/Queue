@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import QRCode from "qrcode";
 import { createClient } from "@/utils/supabase/client";
 import { assess, type FeeServiceSpec } from "@/lib/fees/calculate";
 import { createCheckin, type CheckinResult } from "@/lib/kiosk/checkin";
+import { getBookingHoursStatus, BOOKING_SCHEDULE } from "@/lib/kiosk/operatingHours";
 import type { ServiceCategory } from "@/lib/db/enums";
 import { UniversitySeal } from "@/components/illustrations/UniversitySeal";
 import { StudentBookingIllustration } from "@/components/illustrations/StudentBookingIllustration";
@@ -20,6 +21,7 @@ import {
   CopyIcon,
   AlertCircleIcon,
   ArrowRightIcon,
+  ClockIcon,
 } from "@/components/icons/Icons";
 
 export interface KioskService {
@@ -84,6 +86,14 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
   const [qr, setQr] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
+  const [hoursStatus, setHoursStatus] = useState(() => getBookingHoursStatus());
+
+  useEffect(() => {
+    const tick = () => setHoursStatus(getBookingHoursStatus());
+    const timer = setInterval(tick, 10000);
+    return () => clearInterval(timer);
+  }, []);
+
   const catServices = useMemo(
     () => (category ? services.filter((s) => s.category === category) : []),
     [services, category],
@@ -128,6 +138,13 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
   }
 
   async function submit() {
+    const current = getBookingHoursStatus();
+    if (!current.isOpen) {
+      setError(
+        `Ticket booking is currently closed. Booking is only available from ${BOOKING_SCHEDULE.LABEL} (Philippine Standard Time).`,
+      );
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
@@ -177,12 +194,26 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
             </div>
           </Link>
 
-          <Link
-            href="/"
-            className="text-xs font-bold px-3 py-1.5 rounded-lg border border-line text-ink-soft hover:bg-slate-50 transition"
-          >
-            ← Exit
-          </Link>
+          <div className="flex items-center gap-3">
+            {hoursStatus.isOpen ? (
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-[#008837] border border-emerald-200">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Open · {BOOKING_SCHEDULE.LABEL} PST</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                <span>Closed · {BOOKING_SCHEDULE.LABEL}</span>
+              </span>
+            )}
+
+            <Link
+              href="/"
+              className="text-xs font-bold px-3 py-1.5 rounded-lg border border-line text-ink-soft hover:bg-slate-50 transition"
+            >
+              ← Exit
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -195,31 +226,84 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
           </div>
         )}
 
-        {/* Step Indicator */}
-        <div className="mb-8 flex items-center justify-between border-b border-line pb-4 text-xs">
-          <div className={`flex items-center gap-2 font-bold ${step === "category" ? "text-[#0038A8]" : "text-muted"}`}>
-            <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-bold ${step === "category" ? "bg-[#0038A8] text-white" : "bg-line"}`}>1</span>
-            <span>Category</span>
-          </div>
-          <span className="text-faint">―</span>
-          <div className={`flex items-center gap-2 font-bold ${step === "services" ? "text-[#0038A8]" : "text-muted"}`}>
-            <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-bold ${step === "services" ? "bg-[#0038A8] text-white" : "bg-line"}`}>2</span>
-            <span>Services</span>
-          </div>
-          <span className="text-faint">―</span>
-          <div className={`flex items-center gap-2 font-bold ${step === "details" ? "text-[#0038A8]" : "text-muted"}`}>
-            <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-bold ${step === "details" ? "bg-[#0038A8] text-white" : "bg-line"}`}>3</span>
-            <span>Details</span>
-          </div>
-          <span className="text-faint">―</span>
-          <div className={`flex items-center gap-2 font-bold ${step === "ticket" ? "text-[#0038A8]" : "text-muted"}`}>
-            <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-bold ${step === "ticket" ? "bg-[#008837] text-white" : "bg-line"}`}>4</span>
-            <span>e-Pass</span>
-          </div>
-        </div>
+        {/* CLOSED STATE VIEW (outside 7:30 AM - 5:00 PM) */}
+        {!hoursStatus.isOpen && step !== "ticket" ? (
+          <section className="space-y-6 py-6">
+            <div className="rounded-3xl p-8 bg-surface border border-line shadow-xs text-center space-y-5">
+              <div className="mx-auto w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shadow-2xs">
+                <ClockIcon size={32} />
+              </div>
 
-        {/* STEP 1: CATEGORY SELECTION */}
-        {step === "category" && (
+              <div className="space-y-2 max-w-md mx-auto">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                  Daily Hours: {BOOKING_SCHEDULE.LABEL} (PST)
+                </span>
+                <h1 className="text-2xl font-black text-[#002776]">
+                  Queue Ticket Registration Closed
+                </h1>
+                <p className="text-xs text-muted leading-relaxed">
+                  The University of Abra Office of the Registrar accepts queue ticket bookings from{" "}
+                  <strong className="text-ink">7:30 AM to 5:00 PM</strong> (Philippine Standard Time). Ticket booking is unavailable beyond 5:00 PM to ensure all queued students are accommodated before office closing.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 border border-line max-w-sm mx-auto text-xs">
+                <p className="text-muted font-medium">Philippine Standard Time</p>
+                <p className="text-xl font-bold font-mono text-[#002776] mt-0.5">{hoursStatus.currentPstTime}</p>
+                <p className="mt-1 text-[11px] font-semibold text-amber-800">
+                  {hoursStatus.reason}
+                </p>
+              </div>
+
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link
+                  href="/track"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-bold text-xs bg-[#0038A8] text-white hover:bg-[#002776] transition shadow-xs text-center"
+                >
+                  Track Existing Ticket
+                </Link>
+                <Link
+                  href="/display"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-bold text-xs bg-surface border border-line text-slate-700 hover:bg-slate-50 transition text-center"
+                >
+                  View Lobby Display
+                </Link>
+                <Link
+                  href="/"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-bold text-xs text-muted hover:text-ink transition text-center"
+                >
+                  Return Home
+                </Link>
+              </div>
+            </div>
+          </section>
+        ) : (
+          <>
+            {/* Step Indicator */}
+            <div className="mb-8 flex items-center justify-between border-b border-line pb-4 text-xs">
+              <div className={`flex items-center gap-2 font-bold ${step === "category" ? "text-[#0038A8]" : "text-muted"}`}>
+                <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-bold ${step === "category" ? "bg-[#0038A8] text-white" : "bg-line"}`}>1</span>
+                <span>Category</span>
+              </div>
+              <span className="text-faint">―</span>
+              <div className={`flex items-center gap-2 font-bold ${step === "services" ? "text-[#0038A8]" : "text-muted"}`}>
+                <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-bold ${step === "services" ? "bg-[#0038A8] text-white" : "bg-line"}`}>2</span>
+                <span>Services</span>
+              </div>
+              <span className="text-faint">―</span>
+              <div className={`flex items-center gap-2 font-bold ${step === "details" ? "text-[#0038A8]" : "text-muted"}`}>
+                <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-bold ${step === "details" ? "bg-[#0038A8] text-white" : "bg-line"}`}>3</span>
+                <span>Details</span>
+              </div>
+              <span className="text-faint">―</span>
+              <div className={`flex items-center gap-2 font-bold ${step === "ticket" ? "text-[#0038A8]" : "text-muted"}`}>
+                <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-bold ${step === "ticket" ? "bg-[#008837] text-white" : "bg-line"}`}>4</span>
+                <span>e-Pass</span>
+              </div>
+            </div>
+
+            {/* STEP 1: CATEGORY SELECTION */}
+            {step === "category" && (
           <section className="space-y-6">
             <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-2xl bg-red-50/80 border border-red-200">
               <div className="shrink-0">
@@ -604,6 +688,8 @@ export default function Kiosk({ services }: { services: KioskService[] }) {
               </div>
             </div>
           </section>
+        )}
+          </>
         )}
       </main>
 
